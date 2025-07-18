@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Life AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="manifest" href="/icons/site.webmanifest">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Happy Life AI</h1>
+        <p>Deine persönliche Dosis Motivation!</p>
+    </header>
+    <main>
+        <div class="input-box">
+            <input type="text" id="user-name" placeholder="Dein Name" />
+            <select id="motivation-theme">
+                <option value="success">Erfolg</option>
+                <option value="courage">Mut</option>
+                <option value="happiness">Glück</option>
+                <option value="creativity">Kreativität</option>
+                <option value="love">Liebe</option>
+                <option value="endurance">Ausdauer</option>
+                <option value="fun">Spaß</option>
+            </select>
+            <button id="generate-btn">Motivation generieren</button>
+            <button id="random-btn">Zufällige Motivation</button>
+        </div>
+        <div id="motivation-message">Hier erscheint deine Motivation...</div>
+        <button id="share-btn">Motivation teilen</button>
+        <div id="saved-messages"></div>
+        <button id="clear-saved-btn">Gespeicherte Motivationen löschen</button>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
