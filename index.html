@@ -337,7 +337,13 @@
 
                     let prompt;
                     if (isRandom) {
-                        prompt = `Erstelle ein einzigartiges, inspirierendes und philosophisches Zitat auf Deutsch. Es sollte sich neu und originell anfühlen. Gib das Zitat und als Autor "Inspiration des Tages" zurück.`;
+                        const randomConcepts = [
+                            "die Stille nach dem Regen", "das Echo eines Lächelns", "die Farbe der Dankbarkeit", 
+                            "das Gewicht einer Erinnerung", "der Mut des ersten Schrittes", "die Wärme eines geteilten Gedankens",
+                            "das Flüstern der Zeit", "die Landkarte einer Narbe"
+                        ];
+                        const randomTopic = randomConcepts[Math.floor(Math.random() * randomConcepts.length)];
+                        prompt = `Du bist ein weiser Philosoph. Schreibe einen einzigen, kurzen, originellen und poetischen Satz über das Konzept "${randomTopic}". Zitiere keine bekannten Personen oder Sprichwörter. Dein Satz sollte zum Nachdenken anregen. Gib nur den Satz selbst zurück, ohne Anführungszeichen.`;
                     } else {
                         const currentTopic = document.getElementById('quote-topic-input').value.trim();
                         if (!currentTopic) {
@@ -345,26 +351,12 @@
                             quoteDisplay.innerHTML = `<p class="text-xl italic text-stone-700 dark:text-stone-300">Gib ein Thema ein oder lade ein zufälliges Zitat.</p>`;
                             return;
                         }
-                        prompt = `Erstelle ein kurzes, einzigartiges und inspirierendes Zitat auf Deutsch zum Thema: "${currentTopic}". Das Zitat sollte positiv und ermutigend sein. Gib nur das Zitat selbst zurück, ohne den Autor zu nennen.`;
+                        prompt = `Erstelle ein kurzes, einzigartiges und inspirierendes Zitat auf Deutsch zum Thema: "${currentTopic}". Das Zitat sollte positiv und ermutigend sein. Gib nur das Zitat selbst zurück, ohne Anführungszeichen.`;
                     }
 
                     try {
                         let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                         const payload = { contents: chatHistory };
-                        
-                        if (isRandom) {
-                             payload.generationConfig = {
-                                responseMimeType: "application/json",
-                                responseSchema: {
-                                    type: "OBJECT",
-                                    properties: {
-                                        "quote": { "type": "STRING" },
-                                        "author": { "type": "STRING" }
-                                    }
-                                }
-                            };
-                        }
-
                         const apiKey = "";
                         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                         
@@ -382,8 +374,7 @@
                         const text = result.candidates[0].content.parts[0].text;
                         
                         if (isRandom) {
-                            const parsed = JSON.parse(text);
-                            this.displayQuote({ content: parsed.quote.trim(), author: parsed.author.trim() });
+                            this.displayQuote({ content: text.trim(), author: 'Inspiration des Tages' });
                         } else {
                             this.displayQuote({ content: text.trim(), author: '' });
                         }
