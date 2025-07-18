@@ -1,389 +1,732 @@
 <!DOCTYPE html>
 <html lang="de" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interaktiver Entwicklungsplan: Happy-Life App</title>
-  <link rel="manifest" href="manifest.json">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .breathing-circle { transition: transform 3s ease-in-out, background-color 3s ease-in-out; outline: none; }
-    .section { transition: opacity 0.5s ease; }
-    input, textarea, button { font-size: 1em; }
-    @media (max-width: 600px) {
-      input, textarea, button { font-size: 1.2em; padding: 1em; }
-    }
-    .icon { width: 1.5em; height: 1.5em; vertical-align: middle; }
-  </style>
-</head>
-<body class="bg-stone-50 text-stone-800">
-
-  <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-stone-200">
-    <nav class="container mx-auto px-6 py-4 flex justify-between items-center" role="navigation" aria-label="Hauptnavigation">
-      <h1 class="text-xl font-bold text-emerald-700">Happy-Life App</h1>
-      <div class="hidden md:flex space-x-6">
-        <a href="#overview" class="text-stone-600 hover:text-emerald-600 transition" aria-label="Übersicht">Übersicht</a>
-        <a href="#existing-features" class="text-stone-600 hover:text-emerald-600 transition" aria-label="Bestehende Funktionen">Bestehende Funktionen</a>
-        <a href="#new-features" class="text-stone-600 hover:text-emerald-600 transition" aria-label="Neue Ideen">Neue Ideen</a>
-      </div>
-      <button id="mobile-menu-button" class="md:hidden text-stone-600" aria-label="Menü öffnen/schließen">
-        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
-      </button>
-    </nav>
-    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-      <a href="#overview" class="block py-2 text-stone-600 hover:text-emerald-600 transition" aria-label="Übersicht">Übersicht</a>
-      <a href="#existing-features" class="block py-2 text-stone-600 hover:text-emerald-600 transition" aria-label="Bestehende Funktionen">Bestehende Funktionen</a>
-      <a href="#new-features" class="block py-2 text-stone-600 hover:text-emerald-600 transition" aria-label="Neue Ideen">Neue Ideen</a>
-    </div>
-  </header>
-
-  <main class="container mx-auto px-6 py-12">
-    <!-- Overview -->
-    <section id="overview" class="text-center mb-20 section">
-      <h2 class="text-4xl font-bold mb-4 text-emerald-800">Interaktiver Entwicklungsplan</h2>
-      <p class="max-w-3xl mx-auto text-lg text-stone-600">
-        Dieses Dokument visualisiert die Analyse und die Vorschläge zur Weiterentwicklung der "Happy-Life" App. Entdecke interaktiv, wie bestehende Funktionen verbessert und welche spannenden neuen Ideen integriert werden können.
-      </p>
-      <!-- Language Switcher -->
-      <div class="mt-4">
-        <button onclick="setLang('de')" aria-label="Deutsch wählen" class="mx-2">🇩🇪 DE</button>
-        <button onclick="setLang('en')" aria-label="Englisch wählen" class="mx-2">🇬🇧 EN</button>
-      </div>
-    </section>
-
-    <!-- Existing Features -->
-    <section id="existing-features" class="mb-20 section">
-      <h3 class="text-3xl font-bold mb-2 text-center">Bestehende Funktionen verbessern</h3>
-      <p class="text-center text-stone-600 mb-10 max-w-2xl mx-auto">Die aktuellen Kernfunktionen bieten eine solide Basis. Mit gezielten Verbesserungen können wir die Nutzererfahrung und die tägliche Motivation steigern.</p>
-      <div class="grid md:grid-cols-2 gap-8">
-
-        <!-- Tägliche Zitate -->
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-stone-200 flex flex-col">
-          <h4 class="text-2xl font-bold mb-4 text-emerald-700">a) Tägliche Zitate</h4>
-          <ul class="space-y-3 mb-6 text-stone-700 flex-grow">
-            <li><span class="text-emerald-500 mr-3 mt-1">✓</span> <b>Mehr Abwechslung durch API:</b> Zitate extern laden für tägliche Neuheiten.</li>
-            <li><span class="text-emerald-500 mr-3 mt-1">✓</span> <b>Ansprechendes Design:</b> Elegante Schriftart und passende Hintergrundbilder.</li>
-            <li><span class="text-emerald-500 mr-3 mt-1">✓</span> <b>Interaktion:</b> Favoriten speichern <span onclick="toggleFavQuote()" aria-label="Zitat favorisieren" tabindex="0" style="cursor:pointer;"><svg class="icon" viewBox="0 0 24 24" fill="red"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span> und Zitate teilen <span onclick="shareQuote()" aria-label="Zitat teilen" tabindex="0" style="cursor:pointer;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 19v-7m0 0l-7 7m7-7l7 7"/></svg></span>.</li>
-            <li><span class="text-emerald-500 mr-3 mt-1">✓</span> <b>Push-Benachrichtigung:</b> Tägliche Erinnerung an das Zitat des Tages.</li>
-          </ul>
-          <div class="bg-stone-100 p-4 rounded-lg mt-4 border border-stone-200">
-            <p class="text-sm text-stone-500 mb-2 italic text-center">Visuelles Mockup:</p>
-            <div class="bg-white p-4 rounded-md shadow-inner text-center">
-              <p id="quote-text" class="text-lg italic text-stone-700">"Das Glück deines Lebens hängt von der Beschaffenheit deiner Gedanken ab."</p>
-              <p id="quote-author" class="text-right text-sm text-stone-500 mt-2">- Marc Aurel</p>
-              <div class="flex justify-center space-x-6 mt-4 text-stone-400">
-                <span id="fav-quote" class="cursor-pointer hover:text-red-500 transition" tabindex="0" aria-label="Zitat favorisieren">❤️</span>
-                <span id="share-quote" class="cursor-pointer hover:text-emerald-600 transition" tabindex="0" aria-label="Zitat teilen">🔗</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Notizblock -->
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-stone-200 flex flex-col">
-          <h4 class="text-2xl font-bold mb-4 text-emerald-700">b) Einfacher Notizblock</h4>
-          <ul class="space-y-3 mb-6 text-stone-700 flex-grow">
-            <li><span class="text-emerald-500 mr-3 mt-1">✓</span><b>Mehrere Notizen verwalten:</b> Notizen mit Titeln in einer Liste speichern.</li>
-            <li><span class="text-emerald-500 mr-3 mt-1">✓</span><b>Struktur für Gedanken:</b> Als geführtes Tagebuch mit täglichen Fragen ausbauen.</li>
-            <li><span class="text-emerald-500 mr-3 mt-1">✓</span><b>Sichere Speicherung:</b> Zuverlässiges Speichern der Notizen auf dem Gerät.</li>
-          </ul>
-          <div class="bg-stone-100 p-4 rounded-lg mt-4 border border-stone-200">
-            <p class="text-sm text-stone-500 mb-2 italic text-center">Visuelles Mockup:</p>
-            <div class="bg-white p-4 rounded-md shadow-inner">
-              <label for="prompt" class="font-semibold text-stone-700">Worauf bist du heute stolz?</label>
-              <textarea id="prompt" rows="3" class="w-full mt-2 p-2 border border-stone-300 rounded-md focus:ring-2 focus:ring-emerald-300 focus:outline-none" placeholder="Schreibe hier ..." aria-label="Notiz eingeben"></textarea>
-              <button onclick="saveNote()" class="mt-2 px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-700" aria-label="Notiz speichern">Speichern</button>
-              <button onclick="showNotes()" class="mt-2 ml-2 px-4 py-2 bg-stone-300 text-stone-700 rounded hover:bg-stone-400" aria-label="Notizen anzeigen">Alle Notizen</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- New Features -->
-    <section id="new-features" class="mb-10 section">
-      <h3 class="text-3xl font-bold mb-2 text-center">Neue Ideen für die App</h3>
-      <p class="text-center text-stone-600 mb-10 max-w-2xl mx-auto">Um die App zu einem umfassenden Begleiter für mentales Wohlbefinden zu machen, können wir neue, wissenschaftlich fundierte Module integrieren.</p>
-      <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
-
-        <!-- Stimmungstracker -->
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-stone-200">
-          <h4 class="text-2xl font-bold mb-2 text-emerald-700">a) Stimmungstracker</h4>
-          <p class="text-stone-600 mb-4">Einmal täglich die Stimmung mit Emojis bewerten, um Muster zu erkennen und das eigene Wohlbefinden besser zu verstehen. Das Diagramm hilft, den Stimmungsverlauf zu erkennen.</p>
-          <div class="chart-container relative w-full h-72 max-w-lg mx-auto mb-4">
-            <canvas id="moodChart"></canvas>
-          </div>
-          <div class="text-center">
-            <p class="font-semibold mb-2 text-stone-700">Wie fühlst du dich heute?</p>
-            <div class="flex justify-center space-x-4 text-3xl">
-              <button class="p-2 rounded-full hover:bg-stone-200 transition mood-btn" aria-label="Sehr gut" tabindex="0">😃</button>
-              <button class="p-2 rounded-full hover:bg-stone-200 transition mood-btn" aria-label="Gut" tabindex="0">🙂</button>
-              <button class="p-2 rounded-full hover:bg-stone-200 transition mood-btn" aria-label="Neutral" tabindex="0">😐</button>
-              <button class="p-2 rounded-full hover:bg-stone-200 transition mood-btn" aria-label="Eher schlecht" tabindex="0">😔</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Geführte Atemübung -->
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-stone-200">
-          <h4 class="text-2xl font-bold mb-2 text-emerald-700">c) Geführte Atemübung</h4>
-          <p class="text-stone-600 mb-4">Eine visuelle, animierte Anleitung für eine beruhigende Atemübung. Ein einfaches, aber wirksames Werkzeug, um in Stressmomenten schnell zur Ruhe zu kommen.</p>
-          <div class="flex flex-col items-center justify-center bg-stone-100 rounded-lg p-6 h-80 border border-stone-200">
-            <div id="breathing-display" tabindex="0" role="button" aria-label="Atemübung starten" class="w-40 h-40 bg-emerald-300 rounded-full flex items-center justify-center breathing-circle cursor-pointer outline-none">
-              <span id="breathing-text" class="text-xl font-medium text-white">Start</span>
-            </div>
-            <audio id="breath-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b8c8b83.mp3"></audio>
-          </div>
-        </div>
-
-        <!-- Dankbarkeitstagebuch -->
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-stone-200">
-          <h4 class="text-2xl font-bold mb-2 text-emerald-700">b) Dankbarkeitstagebuch</h4>
-          <p class="text-stone-600 mb-4">Ein spezieller Bereich, um jeden Tag 3 Dinge festzuhalten, für die man dankbar ist. Dies fördert eine positive Grundhaltung und steigert nachweislich das Wohlbefinden.</p>
-          <div class="bg-stone-100 p-4 rounded-lg border border-stone-200">
-            <p class="font-semibold text-stone-700 mb-2">Heutige Dankbarkeits-Punkte:</p>
-            <input type="text" id="grat1" placeholder="1. ..." class="w-full mb-2 p-2 border border-stone-300 rounded-md" aria-label="Dankbarkeitspunkt 1">
-            <input type="text" id="grat2" placeholder="2. ..." class="w-full mb-2 p-2 border border-stone-300 rounded-md" aria-label="Dankbarkeitspunkt 2">
-            <input type="text" id="grat3" placeholder="3. ..." class="w-full p-2 border border-stone-300 rounded-md" aria-label="Dankbarkeitspunkt 3">
-            <button onclick="saveGratitude()" class="mt-2 px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-700" aria-label="Dankbarkeit speichern">Speichern</button>
-            <button onclick="showGratitude()" class="mt-2 ml-2 px-4 py-2 bg-stone-300 text-stone-700 rounded hover:bg-stone-400" aria-label="Vergangene Einträge anzeigen">Vergangene Einträge</button>
-          </div>
-        </div>
-
-        <!-- Kleine Ziele setzen -->
-        <div class="bg-white p-6 rounded-xl shadow-lg border border-stone-200">
-          <h4 class="text-2xl font-bold mb-2 text-emerald-700">d) Kleine Ziele setzen</h4>
-          <p class="text-stone-600 mb-4">Das Setzen und Erreichen kleiner, machbarer Tages- oder Wochenziele stärkt das Gefühl von Erfolg und Selbstwirksamkeit. Ein wichtiger Baustein für mentale Gesundheit.</p>
-          <div class="bg-stone-100 p-4 rounded-lg border border-stone-200">
-            <p class="font-semibold text-stone-700 mb-2">Meine Ziele für heute:</p>
-            <input id="new-goal" type="text" placeholder="Neues Ziel ..." class="w-full mb-2 p-2 border border-stone-300 rounded-md" aria-label="Neues Ziel eingeben">
-            <button onclick="addGoal()" class="mb-2 px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-700" aria-label="Ziel hinzufügen">Ziel hinzufügen</button>
-            <ul id="goal-list" class="space-y-2"></ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Feedback Form -->
-    <section class="mt-16 section">
-      <h4 class="text-2xl font-bold mb-4 text-emerald-700 text-center">Feedback & Vorschläge</h4>
-      <form id="feedback-form" class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg border border-stone-200">
-        <textarea name="feedback" id="feedback" class="w-full p-2 border border-stone-300 rounded-md mb-4" rows="3" placeholder="Ihr Feedback ..." aria-label="Feedback eingeben" required></textarea>
-        <button type="submit" class="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-700" aria-label="Feedback absenden">Absenden</button>
-      </form>
-    </section>
-  </main>
-
-  <footer class="bg-white border-t border-stone-200">
-    <div class="container mx-auto px-6 py-8 text-center text-stone-500">
-      <p class="font-bold text-lg text-emerald-700 mb-2">Fazit</p>
-      <p class="max-w-3xl mx-auto">
-        Das Projekt "Happy-Life" hat enormes Potenzial. Durch die Kombination von bewährten Funktionen mit neuen, interaktiven Modulen kann eine wertvolle Anwendung entstehen, die Menschen täglich unterstützt.
-      </p>
-    </div>
-  </footer>
-
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
-  </script>
-
-  <!-- App Logic -->
-  <script>
-    // Accessibility: Mobile menu
-    document.addEventListener('DOMContentLoaded', () => {
-      const mobileMenuButton = document.getElementById('mobile-menu-button');
-      const mobileMenu = document.getElementById('mobile-menu');
-      mobileMenuButton.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-      });
-      document.querySelectorAll('#mobile-menu a').forEach(link => {
-        link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
-      });
-    });
-
-    // Internationalization (stub)
-    const translations = {
-      de: { greeting: "Hallo", save: "Speichern", feedback_thanks: "Danke für Ihr Feedback!" },
-      en: { greeting: "Hello", save: "Save", feedback_thanks: "Thank you for your feedback!" }
-    };
-    function t(key) {
-      const lang = localStorage.getItem('lang') || 'de';
-      return translations[lang][key] || key;
-    }
-    function setLang(lang) {
-      localStorage.setItem('lang', lang);
-      alert('Sprache geändert! Die Seite neu laden, um Änderungen zu sehen.');
-    }
-
-    // Tägliche Zitate (mock API)
-    function loadQuote() {
-      // Example: Add more quotes or fetch from API
-      const quotes = [
-        { text: "Das Glück deines Lebens hängt von der Beschaffenheit deiner Gedanken ab.", author: "Marc Aurel" },
-        { text: "Jeder Tag ist eine neue Chance.", author: "Unbekannt" },
-        { text: "Die beste Zeit für einen Neuanfang ist jetzt.", author: "Unbekannt" }
-      ];
-      const idx = new Date().getDate() % quotes.length;
-      document.getElementById('quote-text').textContent = quotes[idx].text;
-      document.getElementById('quote-author').textContent = '- ' + quotes[idx].author;
-    }
-    loadQuote();
-
-    function toggleFavQuote() {
-      alert("Zitat als Favorit gespeichert!");
-    }
-    function shareQuote() {
-      const text = document.getElementById('quote-text').textContent;
-      navigator.share ? navigator.share({ text }) : alert("Zitat kopiert: " + text);
-    }
-
-    // Notizblock
-    function saveNote() {
-      const value = document.getElementById('prompt').value.trim();
-      if (!value) return alert("Bitte geben Sie eine Notiz ein!");
-      let notes = JSON.parse(localStorage.getItem('notes') || '[]');
-      notes.push({ text: value, date: new Date().toLocaleDateString() });
-      localStorage.setItem('notes', JSON.stringify(notes));
-      alert("Notiz gespeichert!");
-      document.getElementById('prompt').value = '';
-    }
-    function showNotes() {
-      let notes = JSON.parse(localStorage.getItem('notes') || '[]');
-      if (!notes.length) return alert("Keine Notizen vorhanden.");
-      alert(notes.map(n => n.date + ": " + n.text).join('\n'));
-    }
-
-    // Stimmungstracker
-    let moodChart;
-    function updateChart() {
-      const moodData = JSON.parse(localStorage.getItem('moods') || '[3,4,2,3,4,4,2]');
-      moodChart.data.datasets[0].data = moodData;
-      moodChart.update();
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      const ctx = document.getElementById('moodChart').getContext('2d');
-      moodChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
-          datasets: [{
-            label: 'Stimmung (1-4)',
-            data: JSON.parse(localStorage.getItem('moods') || '[3,4,2,3,4,4,2]'),
-            backgroundColor: 'rgba(16,185,129,0.5)',
-            borderColor: 'rgba(16,185,129,1)',
-            borderWidth: 1,
-            borderRadius: 4,
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true, max: 4,
-              ticks: { stepSize: 1, callback: v => ['','😔','😐','🙂','😃'][v] }
-            }
-          },
-          plugins: { legend: { display: false } }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy-Life App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
         }
-      });
-      document.querySelectorAll('.mood-btn').forEach((btn, idx) => {
-        btn.addEventListener('click', () => {
-          let moods = JSON.parse(localStorage.getItem('moods') || '[3,4,2,3,4,4,2]');
-          moods[new Date().getDay()] = idx + 1;
-          localStorage.setItem('moods', JSON.stringify(moods));
-          updateChart();
+        .breathing-circle {
+            transition: transform 4s ease-in-out, background-color 4s ease-in-out;
+        }
+        .tab-active {
+            border-color: #059669; /* emerald-600 */
+            color: #059669;
+            font-weight: 600;
+        }
+        .dark .tab-active {
+            border-color: #34d399; /* emerald-400 */
+            color: #34d399;
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #4b5563; /* stone-600 */
+        }
+        .dark .tab-inactive {
+            color: #9ca3af; /* stone-400 */
+        }
+        .goal-item.completed span {
+            text-decoration: line-through;
+            color: #9ca3af; /* stone-400 */
+        }
+        .dark .goal-item.completed span {
+             color: #6b7280; /* stone-500 */
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #059669;
+            animation: spin 1s ease infinite;
+        }
+        .dark .spinner {
+            border-left-color: #34d399;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 dark:bg-gray-900 dark:text-stone-200 transition-colors duration-300">
+
+    <!-- Login Overlay -->
+    <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-stone-50 dark:bg-gray-900">
+        <div class="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold text-center text-emerald-700 dark:text-emerald-400">Willkommen!</h2>
+            <p class="text-center text-stone-600 dark:text-stone-400">Wie dürfen wir dich nennen?</p>
+            <div>
+                <input type="text" id="name-input" class="w-full p-3 text-center border border-stone-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-md" placeholder="Dein Name">
+            </div>
+            <button id="login-btn" class="w-full bg-emerald-600 text-white px-4 py-3 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition font-semibold">Los geht's</button>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
+        
+        <header class="text-center mb-8 relative">
+            <h1 id="user-greeting" class="text-3xl font-bold text-emerald-700 dark:text-emerald-400"></h1>
+            <p class="text-stone-600 dark:text-stone-400 mt-2">Dein täglicher Begleiter für mehr Wohlbefinden.</p>
+            <div class="absolute top-0 right-0 flex items-center gap-2">
+                <button id="theme-toggle" class="p-2 rounded-full text-stone-500 dark:text-yellow-300 hover:bg-stone-200 dark:hover:bg-gray-700">
+                    <svg id="theme-toggle-dark-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05A1 1 0 003.636 6.464l.707.707a1 1 0 001.414-1.414l-.707-.707zM3 11a1 1 0 100-2H2a1 1 0 100 2h1zM6.464 16.364l.707-.707a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414z"></path></svg>
+                </button>
+                <button id="logout-btn" class="p-2 rounded-full text-stone-500 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <nav class="mb-8 border-b border-stone-200 dark:border-gray-700">
+            <ul class="flex flex-wrap -mb-px justify-center text-sm font-medium text-center">
+                <li class="mr-2"><button data-tab="zitate" class="inline-block p-4 border-b-2 rounded-t-lg tab-active">Zitate</button></li>
+                <li class="mr-2"><button data-tab="tagebuch" class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive">Tagebuch</button></li>
+                <li class="mr-2"><button data-tab="stimmung" class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive">Stimmung</button></li>
+                <li class="mr-2"><button data-tab="atmung" class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive">Atmung</button></li>
+                <li><button data-tab="ziele" class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive">Ziele</button></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Zitate Section -->
+            <section id="zitate" class="app-section">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700 text-center">
+                    <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400">Personalisiertes Zitat</h2>
+                    <p class="text-stone-600 dark:text-stone-400 mb-4">Wozu brauchst du heute Inspiration?</p>
+                    <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                        <input type="text" id="quote-topic-input" class="flex-grow p-2 border border-stone-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-md" placeholder="z.B. Motivation, Geduld, Freude...">
+                        <button id="generate-ai-quote-btn" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition">Zitat erstellen</button>
+                    </div>
+
+                    <div id="quote-display" class="min-h-[12rem] flex flex-col justify-center items-center mb-4 p-4 bg-stone-50 dark:bg-gray-900/50 rounded-lg">
+                        <p class="text-xl italic text-stone-700 dark:text-stone-300">Gib ein Thema ein oder lade ein zufälliges Zitat.</p>
+                    </div>
+                    <div class="flex flex-wrap justify-center items-center gap-4 border-t border-stone-200 dark:border-gray-700 pt-4">
+                        <button id="new-quote-btn" class="bg-stone-200 text-stone-700 px-4 py-2 rounded-lg hover:bg-stone-300 dark:bg-gray-700 dark:text-stone-300 dark:hover:bg-gray-600 transition">Zufälliges Zitat</button>
+                        <button id="favorite-quote-btn" class="bg-stone-200 text-stone-700 px-4 py-2 rounded-lg hover:bg-stone-300 dark:bg-gray-700 dark:text-stone-300 dark:hover:bg-gray-600 transition">Favorit ★</button>
+                        <button id="show-favorites-btn" class="bg-stone-200 text-stone-700 px-4 py-2 rounded-lg hover:bg-stone-300 dark:bg-gray-700 dark:text-stone-300 dark:hover:bg-gray-600 transition">Favoriten anzeigen</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tagebuch Section -->
+            <section id="tagebuch" class="app-section hidden">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
+                    <h2 id="journal-prompt" class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center"></h2>
+                    <textarea id="journal-entry" rows="6" class="w-full p-3 border border-stone-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-emerald-400 focus:outline-none" placeholder="Schreibe hier deine Gedanken..."></textarea>
+                    <button id="save-journal-btn" class="w-full mt-4 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition">Eintrag für heute speichern</button>
+                    <div class="mt-6">
+                        <h3 class="text-xl font-bold mb-2 text-center">Vergangene Einträge</h3>
+                        <div id="journal-history" class="space-y-4 max-h-96 overflow-y-auto p-2 bg-stone-50 dark:bg-gray-800 rounded-lg">
+                           <p class="text-stone-500 dark:text-stone-400 text-center">Keine Einträge gefunden.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stimmung Section -->
+            <section id="stimmung" class="app-section hidden">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
+                    <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">Wie fühlst du dich heute?</h2>
+                    <div class="flex justify-center space-x-2 sm:space-x-4 text-3xl sm:text-4xl mb-6">
+                       <button data-mood="4" class="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-gray-700 transition transform hover:scale-110">😃</button>
+                       <button data-mood="3" class="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-gray-700 transition transform hover:scale-110">🙂</button>
+                       <button data-mood="2" class="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-gray-700 transition transform hover:scale-110">😐</button>
+                       <button data-mood="1" class="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-gray-700 transition transform hover:scale-110">😔</button>
+                    </div>
+                    <p id="mood-confirmation" class="text-center text-emerald-600 dark:text-emerald-400 h-6"></p>
+                    <div class="mt-4">
+                        <h3 class="text-xl font-bold mb-2 text-center">Stimmungsverlauf der letzten 7 Tage</h3>
+                        <div class="chart-container relative w-full h-72 max-w-2xl mx-auto">
+                            <canvas id="moodChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Atmung Section -->
+            <section id="atmung" class="app-section hidden">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
+                    <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">Geführte Atemübung</h2>
+                    <p class="text-stone-600 dark:text-stone-400 mb-6 text-center">Klicke auf den Kreis, um die Übung zu starten oder zu stoppen.<br>Folge den Anweisungen, um zur Ruhe zu kommen.</p>
+                    <div class="flex flex-col items-center justify-center bg-stone-100 dark:bg-gray-900 rounded-lg p-6 h-80 border border-stone-200 dark:border-gray-700">
+                        <div id="breathing-display" class="w-40 h-40 bg-emerald-400 dark:bg-emerald-500 rounded-full flex items-center justify-center breathing-circle cursor-pointer shadow-lg">
+                            <span id="breathing-text" class="text-xl font-medium text-white text-center">Start</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ziele Section -->
+            <section id="ziele" class="app-section hidden">
+                 <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
+                    <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">Meine Ziele für heute</h2>
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="goal-input" class="flex-grow p-2 border border-stone-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-md" placeholder="Neues Ziel hinzufügen...">
+                        <button id="add-goal-btn" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition">Hinzufügen</button>
+                    </div>
+                    <div id="goal-list" class="space-y-2">
+                        <p class="text-stone-500 dark:text-stone-400 text-center">Noch keine Ziele für heute.</p>
+                    </div>
+                     <button id="clear-completed-goals-btn" class="w-full mt-4 bg-stone-500 text-white px-4 py-2 rounded-lg hover:bg-stone-600 dark:bg-gray-600 dark:hover:bg-gray-500 transition hidden">Erledigte Ziele entfernen</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Favorites Modal -->
+    <div id="favorites-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative">
+            <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400">Meine Lieblingszitate</h2>
+            <div id="favorites-list" class="space-y-4 max-h-96 overflow-y-auto">
+                <!-- Favorites will be injected here -->
+            </div>
+            <button id="close-favorites-modal-btn" class="absolute top-4 right-4 text-stone-500 dark:text-stone-300 hover:text-stone-800 dark:hover:text-white text-2xl">&times;</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = {
+                // STATE
+                currentQuote: { content: '', author: '' },
+                fallbackQuotes: [
+                    { content: 'Das Glück deines Lebens hängt von der Beschaffenheit deiner Gedanken ab.', author: 'Marc Aurel' },
+                    { content: 'Sei du selbst die Veränderung, die du dir wünschst für diese Welt.', author: 'Mahatma Gandhi' },
+                    { content: 'Der Weg ist das Ziel.', author: 'Konfuzius' },
+                    { content: 'Phantasie ist wichtiger als Wissen, denn Wissen ist begrenzt.', author: 'Albert Einstein' },
+                    { content: 'Auch aus Steinen, die einem in den Weg gelegt werden, kann man Schönes bauen.', author: 'Johann Wolfgang von Goethe' }
+                ],
+                journalPrompts: [
+                    "Worauf bist du heute stolz?", "Wofür bist du heute dankbar?", "Was hat dir heute Freude bereitet?",
+                    "Was war heute eine kleine Herausforderung?", "Wem konntest du heute helfen?", "Was hast du heute Neues gelernt?",
+                    "Beschreibe einen schönen Moment von heute."
+                ],
+                moodChartInstance: null,
+                isBreathing: false,
+                breathingTimeout1: null, breathingTimeout2: null, breathingTimeout3: null,
+
+                // INITIALIZATION
+                init() {
+                    this.setupAuth();
+                    this.setupDarkMode();
+                    this.setupTabs();
+                    this.setupQuotes();
+                    this.setupJournal();
+                    this.setupMood();
+                    this.setupBreathing();
+                    this.setupGoals();
+                },
+                
+                // AUTHENTICATION
+                setupAuth() {
+                    const loginOverlay = document.getElementById('login-overlay');
+                    const appContainer = document.getElementById('app-container');
+                    const loginBtn = document.getElementById('login-btn');
+                    const nameInput = document.getElementById('name-input');
+                    const logoutBtn = document.getElementById('logout-btn');
+                    const greetingEl = document.getElementById('user-greeting');
+
+                    const userName = this.getLocalStorage('userName');
+
+                    if (userName) {
+                        greetingEl.textContent = `Hallo, ${userName}!`;
+                        loginOverlay.classList.add('hidden');
+                        appContainer.classList.remove('hidden');
+                    } else {
+                        loginOverlay.classList.remove('hidden');
+                        appContainer.classList.add('hidden');
+                    }
+
+                    loginBtn.addEventListener('click', () => {
+                        const name = nameInput.value.trim();
+                        if (name) {
+                            this.setLocalStorage('userName', name);
+                            this.setupAuth(); // Re-run auth to update UI
+                        } else {
+                            alert('Bitte gib deinen Namen ein.');
+                        }
+                    });
+                    
+                    nameInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            loginBtn.click();
+                        }
+                    });
+
+                    logoutBtn.addEventListener('click', () => {
+                        localStorage.removeItem('userName');
+                        nameInput.value = '';
+                        this.setupAuth(); // Re-run auth to show login
+                    });
+                },
+
+                // DARK MODE
+                setupDarkMode() {
+                    const toggle = document.getElementById('theme-toggle');
+                    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+                    const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+                    const applyTheme = (isDark) => {
+                        if (isDark) {
+                            document.documentElement.classList.add('dark');
+                            darkIcon.classList.remove('hidden');
+                            lightIcon.classList.add('hidden');
+                            this.setLocalStorage('theme', 'dark');
+                        } else {
+                            document.documentElement.classList.remove('dark');
+                            darkIcon.classList.add('hidden');
+                            lightIcon.classList.remove('hidden');
+                            this.setLocalStorage('theme', 'light');
+                        }
+                        if (this.moodChartInstance) {
+                            this.renderMoodChart();
+                        }
+                    };
+
+                    toggle.addEventListener('click', () => {
+                        const isDark = document.documentElement.classList.contains('dark');
+                        applyTheme(!isDark);
+                    });
+
+                    const savedTheme = this.getLocalStorage('theme');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    applyTheme(savedTheme === 'dark' || (savedTheme === null && prefersDark));
+                },
+
+                // TABS
+                setupTabs() {
+                    const tabs = document.querySelectorAll('nav button');
+                    const sections = document.querySelectorAll('.app-section');
+                    tabs.forEach(tab => {
+                        tab.addEventListener('click', () => {
+                            tabs.forEach(t => t.classList.replace('tab-active', 'tab-inactive'));
+                            tab.classList.replace('tab-inactive', 'tab-active');
+
+                            sections.forEach(section => section.classList.add('hidden'));
+                            document.getElementById(tab.dataset.tab).classList.remove('hidden');
+                        });
+                    });
+                },
+
+                // QUOTES
+                setupQuotes() {
+                    document.getElementById('generate-ai-quote-btn').addEventListener('click', () => this.generateAiQuote(false));
+                    document.getElementById('new-quote-btn').addEventListener('click', () => this.generateAiQuote(true));
+                    document.getElementById('favorite-quote-btn').addEventListener('click', () => this.saveFavoriteQuote());
+                    document.getElementById('show-favorites-btn').addEventListener('click', () => this.showFavoritesModal());
+                    document.getElementById('close-favorites-modal-btn').addEventListener('click', () => this.hideFavoritesModal());
+                },
+                async generateAiQuote(isRandom = false) {
+                    const quoteDisplay = document.getElementById('quote-display');
+                    quoteDisplay.innerHTML = `<div class="spinner"></div>`;
+
+                    let prompt;
+                    if (isRandom) {
+                        prompt = `Erstelle ein einzigartiges, inspirierendes und philosophisches Zitat auf Deutsch. Es sollte sich neu und originell anfühlen. Gib das Zitat und als Autor "Inspiration des Tages" zurück.`;
+                    } else {
+                        const currentTopic = document.getElementById('quote-topic-input').value.trim();
+                        if (!currentTopic) {
+                            alert('Bitte gib ein Thema für dein Zitat ein.');
+                            quoteDisplay.innerHTML = `<p class="text-xl italic text-stone-700 dark:text-stone-300">Gib ein Thema ein oder lade ein zufälliges Zitat.</p>`;
+                            return;
+                        }
+                        prompt = `Erstelle ein kurzes, einzigartiges und inspirierendes Zitat auf Deutsch zum Thema: "${currentTopic}". Das Zitat sollte positiv und ermutigend sein. Gib nur das Zitat selbst zurück, ohne den Autor zu nennen.`;
+                    }
+
+                    try {
+                        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                        const payload = { contents: chatHistory };
+                        
+                        if (isRandom) {
+                             payload.generationConfig = {
+                                responseMimeType: "application/json",
+                                responseSchema: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        "quote": { "type": "STRING" },
+                                        "author": { "type": "STRING" }
+                                    }
+                                }
+                            };
+                        }
+
+                        const apiKey = "";
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                        
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) throw new Error(`API request failed: ${response.status}`);
+                        
+                        const result = await response.json();
+                        if (!result.candidates || result.candidates.length === 0) throw new Error('No content received from API.');
+
+                        const text = result.candidates[0].content.parts[0].text;
+                        
+                        if (isRandom) {
+                            const parsed = JSON.parse(text);
+                            this.displayQuote({ content: parsed.quote.trim(), author: parsed.author.trim() });
+                        } else {
+                            this.displayQuote({ content: text.trim(), author: '' });
+                        }
+
+                    } catch (error) {
+                        console.error("Error generating AI quote:", error);
+                        this.showFallbackQuote();
+                    }
+                },
+                showFallbackQuote() {
+                    const quote = this.fallbackQuotes[Math.floor(Math.random() * this.fallbackQuotes.length)];
+                    this.displayQuote(quote);
+                },
+                displayQuote(quote) {
+                    this.currentQuote = quote;
+                    const quoteDisplay = document.getElementById('quote-display');
+                    let authorHtml = '';
+                    if (quote.author) {
+                        authorHtml = `<p class="text-right text-md text-stone-500 dark:text-stone-400 mt-4">- ${quote.author}</p>`;
+                    }
+                    quoteDisplay.innerHTML = `
+                        <p class="text-xl italic text-stone-700 dark:text-stone-300">"${quote.content}"</p>
+                        ${authorHtml}
+                    `;
+                },
+                saveFavoriteQuote() {
+                    if (!this.currentQuote.content) return;
+                    const favorites = this.getLocalStorage('favorites', []);
+                    if (!favorites.some(fav => fav.content === this.currentQuote.content)) {
+                        favorites.push(this.currentQuote);
+                        this.setLocalStorage('favorites', favorites);
+                        alert('Zitat zu Favoriten hinzugefügt!');
+                    } else {
+                        alert('Dieses Zitat ist bereits in deinen Favoriten.');
+                    }
+                },
+                showFavoritesModal() {
+                    const favorites = this.getLocalStorage('favorites', []);
+                    const listEl = document.getElementById('favorites-list');
+                    listEl.innerHTML = '';
+                    if (favorites.length === 0) {
+                        listEl.innerHTML = '<p class="text-stone-500 dark:text-stone-400">Noch keine Favoriten gespeichert.</p>';
+                    } else {
+                        favorites.forEach((fav, index) => {
+                            const item = document.createElement('div');
+                            item.className = 'bg-stone-100 dark:bg-gray-700 p-4 rounded-lg';
+                            let authorHtml = '';
+                            if (fav.author) {
+                                authorHtml = `<p class="text-right text-sm text-stone-500 dark:text-stone-400 mt-2">- ${fav.author}</p>`;
+                            }
+                            item.innerHTML = `
+                                <p class="italic">"${fav.content}"</p>
+                                ${authorHtml}
+                                <button data-index="${index}" class="remove-favorite-btn text-red-500 text-sm mt-2 hover:underline">Entfernen</button>
+                            `;
+                            listEl.appendChild(item);
+                        });
+                    }
+                    document.querySelectorAll('.remove-favorite-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => this.removeFavorite(e.target.dataset.index));
+                    });
+                    document.getElementById('favorites-modal').classList.remove('hidden');
+                    document.getElementById('favorites-modal').classList.add('flex');
+                },
+                 removeFavorite(index) {
+                    let favorites = this.getLocalStorage('favorites', []);
+                    favorites.splice(index, 1);
+                    this.setLocalStorage('favorites', favorites);
+                    this.showFavoritesModal();
+                },
+                hideFavoritesModal() {
+                    document.getElementById('favorites-modal').classList.add('hidden');
+                    document.getElementById('favorites-modal').classList.remove('flex');
+                },
+
+                // JOURNAL
+                setupJournal() {
+                    const today = new Date();
+                    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+                    const promptIndex = dayOfYear % this.journalPrompts.length;
+                    document.getElementById('journal-prompt').textContent = this.journalPrompts[promptIndex];
+                    
+                    document.getElementById('save-journal-btn').addEventListener('click', () => this.saveJournalEntry());
+                    this.loadJournal();
+                },
+                saveJournalEntry() {
+                    const entryText = document.getElementById('journal-entry').value;
+                    if (entryText.trim() === '') {
+                        alert('Bitte schreibe zuerst etwas.');
+                        return;
+                    }
+                    const todayKey = new Date().toISOString().split('T')[0];
+                    const journal = this.getLocalStorage('journal', {});
+                    journal[todayKey] = {
+                        prompt: document.getElementById('journal-prompt').textContent,
+                        entry: entryText
+                    };
+                    this.setLocalStorage('journal', journal);
+                    this.loadJournal();
+                    alert('Eintrag gespeichert!');
+                },
+                loadJournal() {
+                    const todayKey = new Date().toISOString().split('T')[0];
+                    const journal = this.getLocalStorage('journal', {});
+                    
+                    document.getElementById('journal-entry').value = journal[todayKey] ? journal[todayKey].entry : '';
+
+                    const historyEl = document.getElementById('journal-history');
+                    historyEl.innerHTML = '';
+                    const sortedKeys = Object.keys(journal).sort().reverse();
+
+                    if (sortedKeys.length === 0) {
+                        historyEl.innerHTML = '<p class="text-stone-500 dark:text-stone-400 text-center">Keine Einträge gefunden.</p>';
+                        return;
+                    }
+
+                    sortedKeys.forEach(key => {
+                        const date = new Date(key);
+                        const formattedDate = date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                        const item = document.createElement('div');
+                        item.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg border border-stone-200 dark:border-gray-600';
+                        item.innerHTML = `
+                            <p class="font-semibold text-stone-600 dark:text-stone-300">${formattedDate}: ${journal[key].prompt}</p>
+                            <p class="text-stone-800 dark:text-stone-200 whitespace-pre-wrap mt-1">${journal[key].entry}</p>
+                        `;
+                        historyEl.appendChild(item);
+                    });
+                },
+
+                // MOOD
+                setupMood() {
+                    document.querySelectorAll('[data-mood]').forEach(btn => {
+                        btn.addEventListener('click', (e) => this.saveMood(e.currentTarget.dataset.mood));
+                    });
+                    this.renderMoodChart();
+                },
+                saveMood(moodValue) {
+                    const todayKey = new Date().toISOString().split('T')[0];
+                    const moods = this.getLocalStorage('moods', {});
+                    moods[todayKey] = parseInt(moodValue);
+                    this.setLocalStorage('moods', moods);
+
+                    const confirmationEl = document.getElementById('mood-confirmation');
+                    confirmationEl.textContent = 'Stimmung für heute gespeichert!';
+                    setTimeout(() => confirmationEl.textContent = '', 2000);
+                    
+                    this.renderMoodChart();
+                },
+                renderMoodChart() {
+                    const moods = this.getLocalStorage('moods', {});
+                    const labels = [];
+                    const data = [];
+                    for (let i = 6; i >= 0; i--) {
+                        const d = new Date();
+                        d.setDate(d.getDate() - i);
+                        const key = d.toISOString().split('T')[0];
+                        labels.push(d.toLocaleDateString('de-DE', { weekday: 'short' }));
+                        data.push(moods[key] || 0);
+                    }
+                    
+                    const isDark = document.documentElement.classList.contains('dark');
+                    const tickColor = isDark ? 'rgba(229, 231, 235, 0.7)' : 'rgba(75, 85, 99, 0.7)';
+                    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
+                    const ctx = document.getElementById('moodChart').getContext('2d');
+                    if (this.moodChartInstance) {
+                        this.moodChartInstance.destroy();
+                    }
+                    this.moodChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Stimmung',
+                                data: data,
+                                backgroundColor: data.map(v => `rgba(16, 185, 129, ${0.2 + v * 0.2})`),
+                                borderColor: 'rgba(16, 185, 129, 1)',
+                                borderWidth: 1,
+                                borderRadius: 4,
+                            }]
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true, max: 4,
+                                    ticks: { stepSize: 1, color: tickColor, callback: (value) => [' ', '😔', '😐', '🙂', '😃'][value] || '' },
+                                    grid: { color: gridColor }
+                                },
+                                x: {
+                                    ticks: { color: tickColor },
+                                    grid: { display: false }
+                                }
+                            },
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                },
+
+                // BREATHING
+                setupBreathing() {
+                    document.getElementById('breathing-display').addEventListener('click', () => this.toggleBreathing());
+                },
+                toggleBreathing() {
+                    this.isBreathing = !this.isBreathing;
+                    if (this.isBreathing) {
+                        this.breathe();
+                    } else {
+                        this.stopBreathing();
+                    }
+                },
+                breathe() {
+                    if(!this.isBreathing) return;
+                    const textEl = document.getElementById('breathing-text');
+                    const circleEl = document.getElementById('breathing-display');
+                    
+                    textEl.textContent = 'Einatmen';
+                    circleEl.style.transform = 'scale(1.5)';
+                    
+                    this.breathingTimeout1 = setTimeout(() => {
+                        textEl.textContent = 'Halten';
+                        this.breathingTimeout2 = setTimeout(() => {
+                            textEl.textContent = 'Ausatmen';
+                            circleEl.style.transform = 'scale(1)';
+                            this.breathingTimeout3 = setTimeout(() => {
+                                if (this.isBreathing) this.breathe();
+                            }, 4000);
+                        }, 4000);
+                    }, 4000);
+                },
+                stopBreathing() {
+                    clearTimeout(this.breathingTimeout1);
+                    clearTimeout(this.breathingTimeout2);
+                    clearTimeout(this.breathingTimeout3);
+                    const textEl = document.getElementById('breathing-text');
+                    const circleEl = document.getElementById('breathing-display');
+                    textEl.textContent = 'Start';
+                    circleEl.style.transform = 'scale(1)';
+                },
+
+                // GOALS
+                setupGoals() {
+                    document.getElementById('add-goal-btn').addEventListener('click', () => this.addGoal());
+                    document.getElementById('goal-input').addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') this.addGoal();
+                    });
+                    document.getElementById('clear-completed-goals-btn').addEventListener('click', () => this.clearCompletedGoals());
+                    this.loadGoals();
+                },
+                addGoal() {
+                    const input = document.getElementById('goal-input');
+                    const text = input.value.trim();
+                    if (text === '') return;
+                    
+                    const goals = this.getGoalsForToday();
+                    goals.push({ text: text, completed: false });
+                    this.saveGoalsForToday(goals);
+                    this.loadGoals();
+                    input.value = '';
+                },
+                toggleGoal(index) {
+                    const goals = this.getGoalsForToday();
+                    goals[index].completed = !goals[index].completed;
+                    this.saveGoalsForToday(goals);
+                    this.loadGoals();
+                },
+                deleteGoal(index) {
+                    const goals = this.getGoalsForToday();
+                    goals.splice(index, 1);
+                    this.saveGoalsForToday(goals);
+                    this.loadGoals();
+                },
+                clearCompletedGoals() {
+                    let goals = this.getGoalsForToday();
+                    goals = goals.filter(goal => !goal.completed);
+                    this.saveGoalsForToday(goals);
+                    this.loadGoals();
+                },
+                loadGoals() {
+                    const goals = this.getGoalsForToday();
+                    const listEl = document.getElementById('goal-list');
+                    const clearBtn = document.getElementById('clear-completed-goals-btn');
+                    listEl.innerHTML = '';
+
+                    if (goals.length === 0) {
+                        listEl.innerHTML = '<p class="text-stone-500 dark:text-stone-400 text-center">Noch keine Ziele für heute.</p>';
+                        clearBtn.classList.add('hidden');
+                        return;
+                    }
+
+                    goals.forEach((goal, index) => {
+                        const item = document.createElement('div');
+                        item.className = `goal-item flex items-center p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-gray-700 ${goal.completed ? 'completed' : ''}`;
+                        item.innerHTML = `
+                            <input type="checkbox" data-index="${index}" class="h-5 w-5 text-emerald-600 border-stone-300 dark:border-gray-500 rounded focus:ring-emerald-500 mr-3 bg-transparent" ${goal.completed ? 'checked' : ''}>
+                            <span class="flex-grow">${goal.text}</span>
+                            <button data-index="${index}" class="delete-goal-btn text-red-400 hover:text-red-600 font-bold text-lg px-2">&times;</button>
+                        `;
+                        listEl.appendChild(item);
+                    });
+                    
+                    if (goals.some(g => g.completed)) {
+                        clearBtn.classList.remove('hidden');
+                    } else {
+                        clearBtn.classList.add('hidden');
+                    }
+
+                    listEl.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                        cb.addEventListener('change', (e) => this.toggleGoal(e.target.dataset.index));
+                    });
+                    listEl.querySelectorAll('.delete-goal-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => this.deleteGoal(e.currentTarget.dataset.index));
+                    });
+                },
+                getGoalsForToday() {
+                    const todayKey = new Date().toISOString().split('T')[0];
+                    const allGoals = this.getLocalStorage('goals', {});
+                    return allGoals[todayKey] || [];
+                },
+                saveGoalsForToday(goals) {
+                    const todayKey = new Date().toISOString().split('T')[0];
+                    const allGoals = this.getLocalStorage('goals', {});
+                    allGoals[todayKey] = goals;
+                    this.setLocalStorage('goals', allGoals);
+                },
+
+                // LOCAL STORAGE HELPERS
+                getLocalStorage(key, defaultValue) {
+                    try {
+                        const value = localStorage.getItem(key);
+                        return value ? JSON.parse(value) : defaultValue;
+                    } catch (e) {
+                        console.error("Could not parse localStorage key:", key, e);
+                        return defaultValue;
+                    }
+                },
+                setLocalStorage(key, value) {
+                    localStorage.setItem(key, JSON.stringify(value));
+                }
+            };
+
+            app.init();
         });
-        btn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') btn.click(); });
-      });
-    });
-
-    // Atemübung (Visual, Sound, Keyboard)
-    const breathingDisplay = document.getElementById('breathing-display');
-    const breathingText = document.getElementById('breathing-text');
-    const breathingCircle = document.querySelector('.breathing-circle');
-    const breathSound = document.getElementById('breath-sound');
-    let isBreathing = false;
-    breathingDisplay.addEventListener('click', () => {
-      if (!isBreathing) { isBreathing = true; breathe(); }
-    });
-    breathingDisplay.addEventListener('keydown', e => {
-      if ((e.key === 'Enter' || e.key === ' ') && !isBreathing) { isBreathing = true; breathe(); }
-    });
-    function breathe() {
-      breathingText.textContent = 'Einatmen';
-      breathingCircle.style.transform = 'scale(1.5)';
-      breathingCircle.style.backgroundColor = '#6ee7b7';
-      breathSound.play();
-      if ('vibrate' in navigator) navigator.vibrate([200]);
-      setTimeout(() => {
-        breathingText.textContent = 'Halten';
-        setTimeout(() => {
-          breathingText.textContent = 'Ausatmen';
-          breathingCircle.style.transform = 'scale(1)';
-          breathingCircle.style.backgroundColor = '#34d399';
-          setTimeout(() => { if(isBreathing) breathe(); }, 4000);
-        }, 4000);
-      }, 4000);
-    }
-
-    // Dankbarkeitstagebuch
-    function saveGratitude() {
-      const g1 = document.getElementById('grat1').value.trim();
-      const g2 = document.getElementById('grat2').value.trim();
-      const g3 = document.getElementById('grat3').value.trim();
-      if (!g1 && !g2 && !g3) return alert("Bitte geben Sie mindestens einen Punkt ein.");
-      let entries = JSON.parse(localStorage.getItem('gratitude') || '[]');
-      entries.push({ date: new Date().toLocaleDateString(), points: [g1,g2,g3].filter(Boolean) });
-      localStorage.setItem('gratitude', JSON.stringify(entries));
-      alert("Heute gespeichert!");
-      document.getElementById('grat1').value = '';
-      document.getElementById('grat2').value = '';
-      document.getElementById('grat3').value = '';
-    }
-    function showGratitude() {
-      let entries = JSON.parse(localStorage.getItem('gratitude') || '[]');
-      if (!entries.length) return alert("Keine Einträge vorhanden.");
-      alert(entries.map(e => e.date + ': ' + e.points.join(', ')).join('\n'));
-    }
-
-    // Ziele setzen
-    function addGoal() {
-      const value = document.getElementById('new-goal').value.trim();
-      if (!value) return alert("Bitte Ziel eingeben!");
-      let goals = JSON.parse(localStorage.getItem('goals') || '[]');
-      goals.push({ text: value, done: false });
-      localStorage.setItem('goals', JSON.stringify(goals));
-      document.getElementById('new-goal').value = '';
-      renderGoals();
-    }
-    function renderGoals() {
-      let goals = JSON.parse(localStorage.getItem('goals') || '[]');
-      document.getElementById('goal-list').innerHTML = goals.map((g, i) =>
-        `<label class="flex items-center"><input type="checkbox" ${g.done?'checked':''} onclick="toggleGoal(${i})" class="h-4 w-4 text-emerald-600 border-stone-300 rounded focus:ring-emerald-500 mr-2"> ${g.text}</label>`
-      ).join('');
-    }
-    function toggleGoal(idx) {
-      let goals = JSON.parse(localStorage.getItem('goals') || '[]');
-      goals[idx].done = !goals[idx].done;
-      localStorage.setItem('goals', JSON.stringify(goals));
-      renderGoals();
-    }
-    window.onload = renderGoals;
-
-    // Feedback form
-    document.getElementById('feedback-form').onsubmit = function(e) {
-      e.preventDefault();
-      alert(t('feedback_thanks'));
-      document.getElementById('feedback').value = '';
-    };
-  </script>
+    </script>
 </body>
 </html>
