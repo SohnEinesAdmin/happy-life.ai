@@ -1,98 +1,80 @@
-const motivationTemplates = {
-    success: [
-        "{name}, heute ist dein Tag, um Großes zu erreichen! Dein Weg zum Erfolg beginnt mit einem kleinen Schritt.",
-        "{name}, deine Entschlossenheit macht dich unaufhaltsam. Erfolg ist nur eine Frage der Zeit!",
-        "{name}, jeder Schritt, den du machst, bringt dich deinem Ziel näher. Bleib dran!"
-    ],
-    courage: [
-        "{name}, hab Mut, deine Träume zu verfolgen! Jeder große Wandel beginnt mit einem mutigen Schritt.",
-        "{name}, du bist stärker, als du denkst. Trau dich, über dich hinauszuwachsen!",
-        "{name}, Mut bedeutet, trotz Angst voranzugehen. Du schaffst das!"
-    ],
-    happiness: [
-        "{name}, dein Lächeln macht die Welt heller. Finde heute Freude in den kleinen Dingen!",
-        "{name}, Glück ist in dir. Lass es heute strahlen!",
-        "{name}, jeder Moment ist eine Chance, glücklich zu sein. Nutze ihn!"
-    ],
-    creativity: [
-        "{name}, lass deine Ideen fließen! Deine Kreativität kennt keine Grenzen.",
-        "{name}, heute ist der Tag, um etwas Neues zu schaffen. Trau dich, anders zu sein!",
-        "{name}, deine Fantasie ist der Schlüssel zu Großem. Entfessle sie!"
-    ],
-    love: [
-        "{name}, deine Liebe macht die Welt schöner. Teile sie heute mit jemandem!",
-        "{name}, ein kleines bisschen Liebe kann Großes bewirken. Los, mach jemandem den Tag!",
-        "{name}, Liebe ist wie WLAN – unsichtbar, aber überall, wenn du verbunden bist!"
-    ],
-    endurance: [
-        "{name}, du bist wie ein Marathonläufer: Jeder Schritt bringt dich weiter, auch wenn’s anstrengend ist!",
-        "{name}, gib nicht auf – deine Ausdauer macht dich unschlagbar!",
-        "{name}, auch wenn’s hart wird, du rockst das wie ein Superheld!"
-    ],
-    fun: [
-    "{name}, du bist so einzigartig, sogar Einhörner sind neidisch!",
-    "{name}, rock den Tag, als wärst du der Star einer Comedy-Show!",
-    "{name}, dein Lächeln ist ansteckender als ein virales Katzenvideo!",
-    "{name}, tanze durch den Tag, als ob niemand zuschaut – außer vielleicht ein paar Glitzer-Feen!"
-]
+const quotes = {
+  success: [
+    "Erfolg beginnt, wenn du an dich glaubst.",
+    "Groß denken, mutig handeln, stark bleiben."
+  ],
+  courage: [
+    "Mut bedeutet, weiterzumachen, auch wenn du Angst hast.",
+    "Wachse, indem du deine Komfortzone verlässt."
+  ],
+  happiness: [
+    "Glück ist eine Entscheidung, kein Zufall.",
+    "Ein Lächeln ist der kürzeste Weg zwischen zwei Menschen."
+  ],
+  creativity: [
+    "Kreativität schläft nicht – nutze sie täglich.",
+    "Deine Ideen sind wertvoller, als du denkst."
+  ],
+  love: [
+    "Liebe beginnt in deinem Herzen – teile sie.",
+    "Liebe ist die stärkste Energie im Universum."
+  ],
+  endurance: [
+    "Kraft entsteht im Durchhalten.",
+    "Ausdauer ist Erfolg in Zeitlupe."
+  ],
+  fun: [
+    "Nur wer lacht, lebt wirklich.",
+    "Spaß ist der Turbo des Lebens."
+  ]
 };
 
-const savedMessages = JSON.parse(localStorage.getItem('savedMessages') || '[]');
-
-function updateSavedMessages() {
-    const savedMessagesDiv = document.getElementById('saved-messages');
-    if (savedMessagesDiv) {
-        savedMessagesDiv.innerHTML = savedMessages.length ? 
-            '<h3>Gespeicherte Motivationen</h3>' + savedMessages.map(msg => `<p>${msg}</p>`).join('') : 
-            '';
-    }
+function getRandomQuote(theme) {
+  const arr = quotes[theme] || [];
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function generateMotivation() {
-    const nameInput = document.getElementById('user-name').value.trim();
-    const theme = document.getElementById('motivation-theme').value;
-    const name = nameInput || "Du";
-    const motivationMessageDiv = document.getElementById('motivation-message');
-    if (!motivationMessageDiv) return;
-    if (!nameInput) {
-        motivationMessageDiv.textContent = "Gib deinen Namen ein, um eine persönliche Motivation zu erhalten!";
-        return;
-    }
-    const messages = motivationTemplates[theme];
-    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    const personalizedMessage = randomMessage.replace("{name}", name);
-    motivationMessageDiv.textContent = personalizedMessage;
-    savedMessages.push(personalizedMessage);
-    localStorage.setItem('savedMessages', JSON.stringify(savedMessages));
-    updateSavedMessages();
-}
+document.getElementById('generate-btn').addEventListener('click', () => {
+  const name = document.getElementById('user-name').value || "Freund";
+  const theme = document.getElementById('motivation-theme').value;
+  const quote = getRandomQuote(theme);
+  const message = `Hey ${name}! ${quote}`;
+  showMessage(message);
+});
 
-document.getElementById('generate-btn').addEventListener('click', generateMotivation);
 document.getElementById('random-btn').addEventListener('click', () => {
-    const themes = Object.keys(motivationTemplates);
-    document.getElementById('motivation-theme').value = themes[Math.floor(Math.random() * themes.length)];
-    generateMotivation();
+  const themes = Object.keys(quotes);
+  const theme = themes[Math.floor(Math.random() * themes.length)];
+  const quote = getRandomQuote(theme);
+  showMessage(quote);
 });
-document.getElementById('share-btn').addEventListener('click', () => {
-    const message = document.getElementById('motivation-message').textContent;
-    if (message && navigator.share) {
-        navigator.share({
-            title: 'Happy Life AI Motivation',
-            text: message,
-            url: window.location.href
-        }).catch(error => {
-            if (error.name !== 'AbortError') {
-                console.error('Fehler beim Teilen:', error);
-            }
-        });
-    } else {
-        alert('Teilen wird auf diesem Gerät nicht unterstützt.');
-    }
-});
+
+function showMessage(msg) {
+  document.getElementById('motivation-message').textContent = msg;
+  saveMessage(msg);
+}
+
+function saveMessage(msg) {
+  const saved = JSON.parse(localStorage.getItem('saved') || "[]");
+  saved.push({ date: new Date().toLocaleString(), text: msg });
+  localStorage.setItem('saved', JSON.stringify(saved));
+  renderSaved();
+}
+
+function renderSaved() {
+  const saved = JSON.parse(localStorage.getItem('saved') || "[]");
+  const div = document.getElementById('saved-messages');
+  div.innerHTML = saved.map(s => `<p>${s.date}: ${s.text}</p>`).join('');
+}
+
 document.getElementById('clear-saved-btn').addEventListener('click', () => {
-    savedMessages.length = 0;
-    localStorage.setItem('savedMessages', JSON.stringify(savedMessages));
-    updateSavedMessages();
+  localStorage.removeItem('saved');
+  renderSaved();
 });
-generateMotivation();
-updateSavedMessages();
+renderSaved();
+
+// Sharing
+document.getElementById('share-btn').addEventListener('click', () => {
+  const msg = document.getElementById('motivation-message').textContent;
+  navigator.clipboard.writeText(msg).then(() => alert("Motivation copied!"));
+});
