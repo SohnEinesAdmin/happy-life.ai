@@ -1,48 +1,19 @@
 <!DOCTYPE html>
-<html lang="de" class="scroll-smooth">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy-Life App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .breathing-circle {
-            transition: transform 4s ease-in-out, background-color 4s ease-in-out;
-        }
-        .tab-active {
-            border-color: #059669; /* emerald-600 */
-            color: #059669;
-            font-weight: 600;
-        }
-        .dark .tab-active {
-            border-color: #34d399; /* emerald-400 */
-            color: #34d399;
-        }
-        .tab-inactive {
-            border-color: transparent;
-            color: #4b5563; /* stone-600 */
-        }
-        .dark .tab-inactive {
-            color: #9ca3af; /* stone-400 */
-        }
-        .goal-item.completed span {
-            text-decoration: line-through;
-            color: #9ca3af; /* stone-400 */
-        }
-        .dark .goal-item.completed span {
-             color: #6b7280; /* stone-500 */
-        }
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+        body { font-family: 'Inter', sans-serif; }
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             width: 36px;
@@ -51,673 +22,498 @@
             border-left-color: #059669;
             animation: spin 1s ease infinite;
         }
-        .dark .spinner {
-            border-left-color: #34d399;
-        }
+        .dark .spinner { border-left-color: #34d399; }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800 dark:bg-gray-900 dark:text-stone-200 transition-colors duration-300">
+<body>
+    <div id="root"></div>
 
-    <!-- Login Overlay -->
-    <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-stone-50 dark:bg-gray-900">
-        <div class="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-            <h2 class="text-3xl font-bold text-center text-emerald-700 dark:text-emerald-400">Willkommen!</h2>
-            <p class="text-center text-stone-600 dark:text-stone-400">Wie dürfen wir dich nennen?</p>
-            <div>
-                <input type="text" id="name-input" class="w-full p-3 text-center border border-stone-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-md" placeholder="Dein Name">
-            </div>
-            <button id="login-btn" class="w-full bg-emerald-600 text-white px-4 py-3 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition font-semibold">Los geht's</button>
-        </div>
-    </div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
 
-    <!-- Main App Container -->
-    <div id="app-container" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
-        
-        <header class="text-center mb-8 relative">
-            <h1 id="user-greeting" class="text-3xl font-bold text-emerald-700 dark:text-emerald-400"></h1>
-            <p class="text-stone-600 dark:text-stone-400 mt-2">Dein täglicher Begleiter für mehr Wohlbefinden.</p>
-            <div class="absolute top-0 right-0 flex items-center gap-2">
-                <button id="theme-toggle" class="p-2 rounded-full text-stone-500 dark:text-yellow-300 hover:bg-stone-200 dark:hover:bg-gray-700">
-                    <svg id="theme-toggle-dark-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                    <svg id="theme-toggle-light-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05A1 1 0 003.636 6.464l.707.707a1 1 0 001.414-1.414l-.707-.707zM3 11a1 1 0 100-2H2a1 1 0 100 2h1zM6.464 16.364l.707-.707a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414z"></path></svg>
-                </button>
-                <button id="logout-btn" class="p-2 rounded-full text-stone-500 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                </button>
-            </div>
-        </header>
+        const LoginOverlay = ({ onLogin }) => {
+            const [name, setName] = useState('');
 
-        <nav class="mb-8 border-b border-stone-200 dark:border-gray-700">
-            <ul class="flex flex-wrap -mb-px justify-center text-sm font-medium text-center">
-                <li class="mr-2"><button data-tab="zitate" class="inline-block p-4 border-b-2 rounded-t-lg tab-active">Zitate</button></li>
-                <li class="mr-2"><button data-tab="tagebuch" class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive">Tagebuch</button></li>
-                <li class="mr-2"><button data-tab="stimmung" class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive">Stimmung</button></li>
-                <li class="mr-2"><button data-tab="atmung" class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive">Atmung</button></li>
-                <li><button data-tab="ziele" class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive">Ziele</button></li>
-            </ul>
-        </nav>
-
-        <main>
-            <!-- Zitate Section -->
-            <section id="zitate" class="app-section">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700 text-center">
-                    <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400">Personalisiertes Zitat</h2>
-                    <p class="text-stone-600 dark:text-stone-400 mb-4">Wozu brauchst du heute Inspiration?</p>
-                    <div class="flex flex-col sm:flex-row gap-2 mb-4">
-                        <input type="text" id="quote-topic-input" class="flex-grow p-2 border border-stone-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-md" placeholder="z.B. Motivation, Geduld, Freude...">
-                        <button id="generate-ai-quote-btn" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition">Zitat erstellen</button>
-                    </div>
-
-                    <div id="quote-display" class="min-h-[12rem] flex flex-col justify-center items-center mb-4 p-4 bg-stone-50 dark:bg-gray-900/50 rounded-lg">
-                        <p class="text-xl italic text-stone-700 dark:text-stone-300">Gib ein Thema ein oder lade ein zufälliges Zitat.</p>
-                    </div>
-                    <div class="flex flex-wrap justify-center items-center gap-4 border-t border-stone-200 dark:border-gray-700 pt-4">
-                        <button id="new-quote-btn" class="bg-stone-200 text-stone-700 px-4 py-2 rounded-lg hover:bg-stone-300 dark:bg-gray-700 dark:text-stone-300 dark:hover:bg-gray-600 transition">Zufälliges Zitat</button>
-                        <button id="favorite-quote-btn" class="bg-stone-200 text-stone-700 px-4 py-2 rounded-lg hover:bg-stone-300 dark:bg-gray-700 dark:text-stone-300 dark:hover:bg-gray-600 transition">Favorit ★</button>
-                        <button id="show-favorites-btn" class="bg-stone-200 text-stone-700 px-4 py-2 rounded-lg hover:bg-stone-300 dark:bg-gray-700 dark:text-stone-300 dark:hover:bg-gray-600 transition">Favoriten anzeigen</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Tagebuch Section -->
-            <section id="tagebuch" class="app-section hidden">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
-                    <h2 id="journal-prompt" class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center"></h2>
-                    <textarea id="journal-entry" rows="6" class="w-full p-3 border border-stone-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-emerald-400 focus:outline-none" placeholder="Schreibe hier deine Gedanken..."></textarea>
-                    <button id="save-journal-btn" class="w-full mt-4 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition">Eintrag für heute speichern</button>
-                    <div class="mt-6">
-                        <h3 class="text-xl font-bold mb-2 text-center">Vergangene Einträge</h3>
-                        <div id="journal-history" class="space-y-4 max-h-96 overflow-y-auto p-2 bg-stone-50 dark:bg-gray-800 rounded-lg">
-                           <p class="text-stone-500 dark:text-stone-400 text-center">Keine Einträge gefunden.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Stimmung Section -->
-            <section id="stimmung" class="app-section hidden">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
-                    <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">Wie fühlst du dich heute?</h2>
-                    <div class="flex justify-center space-x-2 sm:space-x-4 text-3xl sm:text-4xl mb-6">
-                       <button data-mood="4" class="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-gray-700 transition transform hover:scale-110">😃</button>
-                       <button data-mood="3" class="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-gray-700 transition transform hover:scale-110">🙂</button>
-                       <button data-mood="2" class="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-gray-700 transition transform hover:scale-110">😐</button>
-                       <button data-mood="1" class="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-gray-700 transition transform hover:scale-110">😔</button>
-                    </div>
-                    <p id="mood-confirmation" class="text-center text-emerald-600 dark:text-emerald-400 h-6"></p>
-                    <div class="mt-4">
-                        <h3 class="text-xl font-bold mb-2 text-center">Stimmungsverlauf der letzten 7 Tage</h3>
-                        <div class="chart-container relative w-full h-72 max-w-2xl mx-auto">
-                            <canvas id="moodChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Atmung Section -->
-            <section id="atmung" class="app-section hidden">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
-                    <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">Geführte Atemübung</h2>
-                    <p class="text-stone-600 dark:text-stone-400 mb-6 text-center">Klicke auf den Kreis, um die Übung zu starten oder zu stoppen.<br>Folge den Anweisungen, um zur Ruhe zu kommen.</p>
-                    <div class="flex flex-col items-center justify-center bg-stone-100 dark:bg-gray-900 rounded-lg p-6 h-80 border border-stone-200 dark:border-gray-700">
-                        <div id="breathing-display" class="w-40 h-40 bg-emerald-400 dark:bg-emerald-500 rounded-full flex items-center justify-center breathing-circle cursor-pointer shadow-lg">
-                            <span id="breathing-text" class="text-xl font-medium text-white text-center">Start</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Ziele Section -->
-            <section id="ziele" class="app-section hidden">
-                 <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
-                    <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">Meine Ziele für heute</h2>
-                    <div class="flex gap-2 mb-4">
-                        <input type="text" id="goal-input" class="flex-grow p-2 border border-stone-300 bg-white dark:bg-gray-700 dark:border-gray-600 rounded-md" placeholder="Neues Ziel hinzufügen...">
-                        <button id="add-goal-btn" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition">Hinzufügen</button>
-                    </div>
-                    <div id="goal-list" class="space-y-2">
-                        <p class="text-stone-500 dark:text-stone-400 text-center">Noch keine Ziele für heute.</p>
-                    </div>
-                     <button id="clear-completed-goals-btn" class="w-full mt-4 bg-stone-500 text-white px-4 py-2 rounded-lg hover:bg-stone-600 dark:bg-gray-600 dark:hover:bg-gray-500 transition hidden">Erledigte Ziele entfernen</button>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Favorites Modal -->
-    <div id="favorites-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative">
-            <h2 class="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400">Meine Lieblingszitate</h2>
-            <div id="favorites-list" class="space-y-4 max-h-96 overflow-y-auto">
-                <!-- Favorites will be injected here -->
-            </div>
-            <button id="close-favorites-modal-btn" class="absolute top-4 right-4 text-stone-500 dark:text-stone-300 hover:text-stone-800 dark:hover:text-white text-2xl">&times;</button>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const app = {
-                // STATE
-                currentQuote: { content: '', author: '' },
-                fallbackQuotes: [
-                    { content: 'Das Glück deines Lebens hängt von der Beschaffenheit deiner Gedanken ab.', author: 'Marc Aurel' },
-                    { content: 'Sei du selbst die Veränderung, die du dir wünschst für diese Welt.', author: 'Mahatma Gandhi' },
-                    { content: 'Der Weg ist das Ziel.', author: 'Konfuzius' },
-                    { content: 'Phantasie ist wichtiger als Wissen, denn Wissen ist begrenzt.', author: 'Albert Einstein' },
-                    { content: 'Auch aus Steinen, die einem in den Weg gelegt werden, kann man Schönes bauen.', author: 'Johann Wolfgang von Goethe' }
-                ],
-                journalPrompts: [
-                    "Worauf bist du heute stolz?", "Wofür bist du heute dankbar?", "Was hat dir heute Freude bereitet?",
-                    "Was war heute eine kleine Herausforderung?", "Wem konntest du heute helfen?", "Was hast du heute Neues gelernt?",
-                    "Beschreibe einen schönen Moment von heute."
-                ],
-                moodChartInstance: null,
-                isBreathing: false,
-                breathingTimeout1: null, breathingTimeout2: null, breathingTimeout3: null,
-
-                // INITIALIZATION
-                init() {
-                    this.setupAuth();
-                    this.setupDarkMode();
-                    this.setupTabs();
-                    this.setupQuotes();
-                    this.setupJournal();
-                    this.setupMood();
-                    this.setupBreathing();
-                    this.setupGoals();
-                },
-                
-                // AUTHENTICATION
-                setupAuth() {
-                    const loginOverlay = document.getElementById('login-overlay');
-                    const appContainer = document.getElementById('app-container');
-                    const loginBtn = document.getElementById('login-btn');
-                    const nameInput = document.getElementById('name-input');
-                    const logoutBtn = document.getElementById('logout-btn');
-                    const greetingEl = document.getElementById('user-greeting');
-
-                    const userName = this.getLocalStorage('userName');
-
-                    if (userName) {
-                        greetingEl.textContent = `Hallo, ${userName}!`;
-                        loginOverlay.classList.add('hidden');
-                        appContainer.classList.remove('hidden');
-                    } else {
-                        loginOverlay.classList.remove('hidden');
-                        appContainer.classList.add('hidden');
-                    }
-
-                    loginBtn.addEventListener('click', () => {
-                        const name = nameInput.value.trim();
-                        if (name) {
-                            this.setLocalStorage('userName', name);
-                            this.setupAuth(); // Re-run auth to update UI
-                        } else {
-                            alert('Bitte gib deinen Namen ein.');
-                        }
-                    });
-                    
-                    nameInput.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            loginBtn.click();
-                        }
-                    });
-
-                    logoutBtn.addEventListener('click', () => {
-                        localStorage.removeItem('userName');
-                        nameInput.value = '';
-                        this.setupAuth(); // Re-run auth to show login
-                    });
-                },
-
-                // DARK MODE
-                setupDarkMode() {
-                    const toggle = document.getElementById('theme-toggle');
-                    const darkIcon = document.getElementById('theme-toggle-dark-icon');
-                    const lightIcon = document.getElementById('theme-toggle-light-icon');
-
-                    const applyTheme = (isDark) => {
-                        if (isDark) {
-                            document.documentElement.classList.add('dark');
-                            darkIcon.classList.remove('hidden');
-                            lightIcon.classList.add('hidden');
-                            this.setLocalStorage('theme', 'dark');
-                        } else {
-                            document.documentElement.classList.remove('dark');
-                            darkIcon.classList.add('hidden');
-                            lightIcon.classList.remove('hidden');
-                            this.setLocalStorage('theme', 'light');
-                        }
-                        if (this.moodChartInstance) {
-                            this.renderMoodChart();
-                        }
-                    };
-
-                    toggle.addEventListener('click', () => {
-                        const isDark = document.documentElement.classList.contains('dark');
-                        applyTheme(!isDark);
-                    });
-
-                    const savedTheme = this.getLocalStorage('theme');
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    applyTheme(savedTheme === 'dark' || (savedTheme === null && prefersDark));
-                },
-
-                // TABS
-                setupTabs() {
-                    const tabs = document.querySelectorAll('nav button');
-                    const sections = document.querySelectorAll('.app-section');
-                    tabs.forEach(tab => {
-                        tab.addEventListener('click', () => {
-                            tabs.forEach(t => t.classList.replace('tab-active', 'tab-inactive'));
-                            tab.classList.replace('tab-inactive', 'tab-active');
-
-                            sections.forEach(section => section.classList.add('hidden'));
-                            document.getElementById(tab.dataset.tab).classList.remove('hidden');
-                        });
-                    });
-                },
-
-                // QUOTES
-                setupQuotes() {
-                    document.getElementById('generate-ai-quote-btn').addEventListener('click', () => this.generateAiQuote(false));
-                    document.getElementById('new-quote-btn').addEventListener('click', () => this.generateAiQuote(true));
-                    document.getElementById('favorite-quote-btn').addEventListener('click', () => this.saveFavoriteQuote());
-                    document.getElementById('show-favorites-btn').addEventListener('click', () => this.showFavoritesModal());
-                    document.getElementById('close-favorites-modal-btn').addEventListener('click', () => this.hideFavoritesModal());
-                },
-                async generateAiQuote(isRandom = false) {
-                    const quoteDisplay = document.getElementById('quote-display');
-                    quoteDisplay.innerHTML = `<div class="spinner"></div>`;
-
-                    let prompt;
-                    if (isRandom) {
-                        const randomConcepts = [
-                            "die Stille nach dem Regen", "das Echo eines Lächelns", "die Farbe der Dankbarkeit", 
-                            "das Gewicht einer Erinnerung", "der Mut des ersten Schrittes", "die Wärme eines geteilten Gedankens",
-                            "das Flüstern der Zeit", "die Landkarte einer Narbe"
-                        ];
-                        const randomTopic = randomConcepts[Math.floor(Math.random() * randomConcepts.length)];
-                        prompt = `Du bist ein weiser Philosoph. Schreibe einen einzigen, kurzen, originellen und poetischen Satz über das Konzept "${randomTopic}". Zitiere keine bekannten Personen oder Sprichwörter. Dein Satz sollte zum Nachdenken anregen. Gib nur den Satz selbst zurück, ohne Anführungszeichen.`;
-                    } else {
-                        const currentTopic = document.getElementById('quote-topic-input').value.trim();
-                        if (!currentTopic) {
-                            alert('Bitte gib ein Thema für dein Zitat ein.');
-                            quoteDisplay.innerHTML = `<p class="text-xl italic text-stone-700 dark:text-stone-300">Gib ein Thema ein oder lade ein zufälliges Zitat.</p>`;
-                            return;
-                        }
-                        prompt = `Erstelle ein kurzes, einzigartiges und inspirierendes Zitat auf Deutsch zum Thema: "${currentTopic}". Das Zitat sollte positiv und ermutigend sein. Gib nur das Zitat selbst zurück, ohne Anführungszeichen.`;
-                    }
-
-                    try {
-                        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-                        const payload = { contents: chatHistory };
-                        const apiKey = "";
-                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-                        
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-
-                        if (!response.ok) throw new Error(`API request failed: ${response.status}`);
-                        
-                        const result = await response.json();
-                        if (!result.candidates || result.candidates.length === 0) throw new Error('No content received from API.');
-
-                        const text = result.candidates[0].content.parts[0].text;
-                        
-                        if (isRandom) {
-                            this.displayQuote({ content: text.trim(), author: 'Inspiration des Tages' });
-                        } else {
-                            this.displayQuote({ content: text.trim(), author: '' });
-                        }
-
-                    } catch (error) {
-                        console.error("Error generating AI quote:", error);
-                        this.showFallbackQuote();
-                    }
-                },
-                showFallbackQuote() {
-                    const quote = this.fallbackQuotes[Math.floor(Math.random() * this.fallbackQuotes.length)];
-                    this.displayQuote(quote);
-                },
-                displayQuote(quote) {
-                    this.currentQuote = quote;
-                    const quoteDisplay = document.getElementById('quote-display');
-                    let authorHtml = '';
-                    if (quote.author) {
-                        authorHtml = `<p class="text-right text-md text-stone-500 dark:text-stone-400 mt-4">- ${quote.author}</p>`;
-                    }
-                    quoteDisplay.innerHTML = `
-                        <p class="text-xl italic text-stone-700 dark:text-stone-300">"${quote.content}"</p>
-                        ${authorHtml}
-                    `;
-                },
-                saveFavoriteQuote() {
-                    if (!this.currentQuote.content) return;
-                    const favorites = this.getLocalStorage('favorites', []);
-                    if (!favorites.some(fav => fav.content === this.currentQuote.content)) {
-                        favorites.push(this.currentQuote);
-                        this.setLocalStorage('favorites', favorites);
-                        alert('Zitat zu Favoriten hinzugefügt!');
-                    } else {
-                        alert('Dieses Zitat ist bereits in deinen Favoriten.');
-                    }
-                },
-                showFavoritesModal() {
-                    const favorites = this.getLocalStorage('favorites', []);
-                    const listEl = document.getElementById('favorites-list');
-                    listEl.innerHTML = '';
-                    if (favorites.length === 0) {
-                        listEl.innerHTML = '<p class="text-stone-500 dark:text-stone-400">Noch keine Favoriten gespeichert.</p>';
-                    } else {
-                        favorites.forEach((fav, index) => {
-                            const item = document.createElement('div');
-                            item.className = 'bg-stone-100 dark:bg-gray-700 p-4 rounded-lg';
-                            let authorHtml = '';
-                            if (fav.author) {
-                                authorHtml = `<p class="text-right text-sm text-stone-500 dark:text-stone-400 mt-2">- ${fav.author}</p>`;
-                            }
-                            item.innerHTML = `
-                                <p class="italic">"${fav.content}"</p>
-                                ${authorHtml}
-                                <button data-index="${index}" class="remove-favorite-btn text-red-500 text-sm mt-2 hover:underline">Entfernen</button>
-                            `;
-                            listEl.appendChild(item);
-                        });
-                    }
-                    document.querySelectorAll('.remove-favorite-btn').forEach(btn => {
-                        btn.addEventListener('click', (e) => this.removeFavorite(e.target.dataset.index));
-                    });
-                    document.getElementById('favorites-modal').classList.remove('hidden');
-                    document.getElementById('favorites-modal').classList.add('flex');
-                },
-                 removeFavorite(index) {
-                    let favorites = this.getLocalStorage('favorites', []);
-                    favorites.splice(index, 1);
-                    this.setLocalStorage('favorites', favorites);
-                    this.showFavoritesModal();
-                },
-                hideFavoritesModal() {
-                    document.getElementById('favorites-modal').classList.add('hidden');
-                    document.getElementById('favorites-modal').classList.remove('flex');
-                },
-
-                // JOURNAL
-                setupJournal() {
-                    const today = new Date();
-                    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-                    const promptIndex = dayOfYear % this.journalPrompts.length;
-                    document.getElementById('journal-prompt').textContent = this.journalPrompts[promptIndex];
-                    
-                    document.getElementById('save-journal-btn').addEventListener('click', () => this.saveJournalEntry());
-                    this.loadJournal();
-                },
-                saveJournalEntry() {
-                    const entryText = document.getElementById('journal-entry').value;
-                    if (entryText.trim() === '') {
-                        alert('Bitte schreibe zuerst etwas.');
-                        return;
-                    }
-                    const todayKey = new Date().toISOString().split('T')[0];
-                    const journal = this.getLocalStorage('journal', {});
-                    journal[todayKey] = {
-                        prompt: document.getElementById('journal-prompt').textContent,
-                        entry: entryText
-                    };
-                    this.setLocalStorage('journal', journal);
-                    this.loadJournal();
-                    alert('Eintrag gespeichert!');
-                },
-                loadJournal() {
-                    const todayKey = new Date().toISOString().split('T')[0];
-                    const journal = this.getLocalStorage('journal', {});
-                    
-                    document.getElementById('journal-entry').value = journal[todayKey] ? journal[todayKey].entry : '';
-
-                    const historyEl = document.getElementById('journal-history');
-                    historyEl.innerHTML = '';
-                    const sortedKeys = Object.keys(journal).sort().reverse();
-
-                    if (sortedKeys.length === 0) {
-                        historyEl.innerHTML = '<p class="text-stone-500 dark:text-stone-400 text-center">Keine Einträge gefunden.</p>';
-                        return;
-                    }
-
-                    sortedKeys.forEach(key => {
-                        const date = new Date(key);
-                        const formattedDate = date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                        const item = document.createElement('div');
-                        item.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg border border-stone-200 dark:border-gray-600';
-                        item.innerHTML = `
-                            <p class="font-semibold text-stone-600 dark:text-stone-300">${formattedDate}: ${journal[key].prompt}</p>
-                            <p class="text-stone-800 dark:text-stone-200 whitespace-pre-wrap mt-1">${journal[key].entry}</p>
-                        `;
-                        historyEl.appendChild(item);
-                    });
-                },
-
-                // MOOD
-                setupMood() {
-                    document.querySelectorAll('[data-mood]').forEach(btn => {
-                        btn.addEventListener('click', (e) => this.saveMood(e.currentTarget.dataset.mood));
-                    });
-                    this.renderMoodChart();
-                },
-                saveMood(moodValue) {
-                    const todayKey = new Date().toISOString().split('T')[0];
-                    const moods = this.getLocalStorage('moods', {});
-                    moods[todayKey] = parseInt(moodValue);
-                    this.setLocalStorage('moods', moods);
-
-                    const confirmationEl = document.getElementById('mood-confirmation');
-                    confirmationEl.textContent = 'Stimmung für heute gespeichert!';
-                    setTimeout(() => confirmationEl.textContent = '', 2000);
-                    
-                    this.renderMoodChart();
-                },
-                renderMoodChart() {
-                    const moods = this.getLocalStorage('moods', {});
-                    const labels = [];
-                    const data = [];
-                    for (let i = 6; i >= 0; i--) {
-                        const d = new Date();
-                        d.setDate(d.getDate() - i);
-                        const key = d.toISOString().split('T')[0];
-                        labels.push(d.toLocaleDateString('de-DE', { weekday: 'short' }));
-                        data.push(moods[key] || 0);
-                    }
-                    
-                    const isDark = document.documentElement.classList.contains('dark');
-                    const tickColor = isDark ? 'rgba(229, 231, 235, 0.7)' : 'rgba(75, 85, 99, 0.7)';
-                    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-
-                    const ctx = document.getElementById('moodChart').getContext('2d');
-                    if (this.moodChartInstance) {
-                        this.moodChartInstance.destroy();
-                    }
-                    this.moodChartInstance = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Stimmung',
-                                data: data,
-                                backgroundColor: data.map(v => `rgba(16, 185, 129, ${0.2 + v * 0.2})`),
-                                borderColor: 'rgba(16, 185, 129, 1)',
-                                borderWidth: 1,
-                                borderRadius: 4,
-                            }]
-                        },
-                        options: {
-                            responsive: true, maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true, max: 4,
-                                    ticks: { stepSize: 1, color: tickColor, callback: (value) => [' ', '😔', '😐', '🙂', '😃'][value] || '' },
-                                    grid: { color: gridColor }
-                                },
-                                x: {
-                                    ticks: { color: tickColor },
-                                    grid: { display: false }
-                                }
-                            },
-                            plugins: { legend: { display: false } }
-                        }
-                    });
-                },
-
-                // BREATHING
-                setupBreathing() {
-                    document.getElementById('breathing-display').addEventListener('click', () => this.toggleBreathing());
-                },
-                toggleBreathing() {
-                    this.isBreathing = !this.isBreathing;
-                    if (this.isBreathing) {
-                        this.breathe();
-                    } else {
-                        this.stopBreathing();
-                    }
-                },
-                breathe() {
-                    if(!this.isBreathing) return;
-                    const textEl = document.getElementById('breathing-text');
-                    const circleEl = document.getElementById('breathing-display');
-                    
-                    textEl.textContent = 'Einatmen';
-                    circleEl.style.transform = 'scale(1.5)';
-                    
-                    this.breathingTimeout1 = setTimeout(() => {
-                        textEl.textContent = 'Halten';
-                        this.breathingTimeout2 = setTimeout(() => {
-                            textEl.textContent = 'Ausatmen';
-                            circleEl.style.transform = 'scale(1)';
-                            this.breathingTimeout3 = setTimeout(() => {
-                                if (this.isBreathing) this.breathe();
-                            }, 4000);
-                        }, 4000);
-                    }, 4000);
-                },
-                stopBreathing() {
-                    clearTimeout(this.breathingTimeout1);
-                    clearTimeout(this.breathingTimeout2);
-                    clearTimeout(this.breathingTimeout3);
-                    const textEl = document.getElementById('breathing-text');
-                    const circleEl = document.getElementById('breathing-display');
-                    textEl.textContent = 'Start';
-                    circleEl.style.transform = 'scale(1)';
-                },
-
-                // GOALS
-                setupGoals() {
-                    document.getElementById('add-goal-btn').addEventListener('click', () => this.addGoal());
-                    document.getElementById('goal-input').addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') this.addGoal();
-                    });
-                    document.getElementById('clear-completed-goals-btn').addEventListener('click', () => this.clearCompletedGoals());
-                    this.loadGoals();
-                },
-                addGoal() {
-                    const input = document.getElementById('goal-input');
-                    const text = input.value.trim();
-                    if (text === '') return;
-                    
-                    const goals = this.getGoalsForToday();
-                    goals.push({ text: text, completed: false });
-                    this.saveGoalsForToday(goals);
-                    this.loadGoals();
-                    input.value = '';
-                },
-                toggleGoal(index) {
-                    const goals = this.getGoalsForToday();
-                    goals[index].completed = !goals[index].completed;
-                    this.saveGoalsForToday(goals);
-                    this.loadGoals();
-                },
-                deleteGoal(index) {
-                    const goals = this.getGoalsForToday();
-                    goals.splice(index, 1);
-                    this.saveGoalsForToday(goals);
-                    this.loadGoals();
-                },
-                clearCompletedGoals() {
-                    let goals = this.getGoalsForToday();
-                    goals = goals.filter(goal => !goal.completed);
-                    this.saveGoalsForToday(goals);
-                    this.loadGoals();
-                },
-                loadGoals() {
-                    const goals = this.getGoalsForToday();
-                    const listEl = document.getElementById('goal-list');
-                    const clearBtn = document.getElementById('clear-completed-goals-btn');
-                    listEl.innerHTML = '';
-
-                    if (goals.length === 0) {
-                        listEl.innerHTML = '<p class="text-stone-500 dark:text-stone-400 text-center">Noch keine Ziele für heute.</p>';
-                        clearBtn.classList.add('hidden');
-                        return;
-                    }
-
-                    goals.forEach((goal, index) => {
-                        const item = document.createElement('div');
-                        item.className = `goal-item flex items-center p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-gray-700 ${goal.completed ? 'completed' : ''}`;
-                        item.innerHTML = `
-                            <input type="checkbox" data-index="${index}" class="h-5 w-5 text-emerald-600 border-stone-300 dark:border-gray-500 rounded focus:ring-emerald-500 mr-3 bg-transparent" ${goal.completed ? 'checked' : ''}>
-                            <span class="flex-grow">${goal.text}</span>
-                            <button data-index="${index}" class="delete-goal-btn text-red-400 hover:text-red-600 font-bold text-lg px-2">&times;</button>
-                        `;
-                        listEl.appendChild(item);
-                    });
-                    
-                    if (goals.some(g => g.completed)) {
-                        clearBtn.classList.remove('hidden');
-                    } else {
-                        clearBtn.classList.add('hidden');
-                    }
-
-                    listEl.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                        cb.addEventListener('change', (e) => this.toggleGoal(e.target.dataset.index));
-                    });
-                    listEl.querySelectorAll('.delete-goal-btn').forEach(btn => {
-                        btn.addEventListener('click', (e) => this.deleteGoal(e.currentTarget.dataset.index));
-                    });
-                },
-                getGoalsForToday() {
-                    const todayKey = new Date().toISOString().split('T')[0];
-                    const allGoals = this.getLocalStorage('goals', {});
-                    return allGoals[todayKey] || [];
-                },
-                saveGoalsForToday(goals) {
-                    const todayKey = new Date().toISOString().split('T')[0];
-                    const allGoals = this.getLocalStorage('goals', {});
-                    allGoals[todayKey] = goals;
-                    this.setLocalStorage('goals', allGoals);
-                },
-
-                // LOCAL STORAGE HELPERS
-                getLocalStorage(key, defaultValue) {
-                    try {
-                        const value = localStorage.getItem(key);
-                        return value ? JSON.parse(value) : defaultValue;
-                    } catch (e) {
-                        console.error("Could not parse localStorage key:", key, e);
-                        return defaultValue;
-                    }
-                },
-                setLocalStorage(key, value) {
-                    localStorage.setItem(key, JSON.stringify(value));
+            const handleLogin = () => {
+                if (name.trim()) {
+                    onLogin(name.trim());
+                } else {
+                    alert('Bitte gib deinen Namen ein.');
                 }
             };
 
-            app.init();
-        });
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-50 dark:bg-gray-900">
+                    <div className="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+                        <h2 className="text-3xl font-bold text-center text-emerald-700 dark:text-emerald-400">Willkommen!</h2>
+                        <p className="text-center text-stone-600 dark:text-stone-400">Wie dürfen wir dich nennen?</p>
+                        <div>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                                className="w-full p-3 text-center border border-stone-300 bg-white dark:bg-gray-700 dark:text-stone-200 dark:border-gray-600 rounded-md"
+                                placeholder="Dein Name"
+                            />
+                        </div>
+                        <button onClick={handleLogin} className="w-full bg-emerald-600 text-white px-4 py-3 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition font-semibold">
+                            Los geht's
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            // State Management
+            const [userName, setUserName] = useState(null);
+            const [theme, setTheme] = useState('light');
+            const [activeTab, setActiveTab] = useState('zitate');
+            
+            // Quote State
+            const [currentQuote, setCurrentQuote] = useState({ content: 'Gib ein Thema ein oder lade ein zufälliges Zitat.', author: '' });
+            const [quoteTopic, setQuoteTopic] = useState('');
+            const [isQuoteLoading, setIsQuoteLoading] = useState(false);
+            const [favorites, setFavorites] = useState([]);
+            const [showFavorites, setShowFavorites] = useState(false);
+
+            // Journal State
+            const [journalPrompt, setJournalPrompt] = useState('');
+            const [journalEntry, setJournalEntry] = useState('');
+            const [journalHistory, setJournalHistory] = useState({});
+
+            // Mood State
+            const [moods, setMoods] = useState({});
+            const [moodConfirmation, setMoodConfirmation] = useState('');
+            const moodChartRef = useRef(null);
+            const chartInstanceRef = useRef(null);
+
+            // Breathing State
+            const [isBreathing, setIsBreathing] = useState(false);
+            const [breathingText, setBreathingText] = useState('Start');
+            const breathingCircleRef = useRef(null);
+            const breathingTimeouts = useRef([]);
+
+            // Goals State
+            const [goals, setGoals] = useState([]);
+            const [goalInput, setGoalInput] = useState('');
+
+            // Helper for Local Storage
+            const getLocalStorage = (key, defaultValue) => {
+                try {
+                    const value = localStorage.getItem(key);
+                    return value ? JSON.parse(value) : defaultValue;
+                } catch (e) { return defaultValue; }
+            };
+
+            const setLocalStorage = (key, value) => {
+                localStorage.setItem(key, JSON.stringify(value));
+            };
+
+            // Effects
+            useEffect(() => {
+                const savedName = getLocalStorage('userName');
+                if (savedName) setUserName(savedName);
+
+                const savedTheme = getLocalStorage('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                setTheme(savedTheme);
+
+                setFavorites(getLocalStorage('favorites', []));
+                setJournalHistory(getLocalStorage('journal', {}));
+                setMoods(getLocalStorage('moods', {}));
+                
+                const todayGoals = getLocalStorage('goals', {})[new Date().toISOString().split('T')[0]] || [];
+                setGoals(todayGoals);
+
+                const journalPrompts = ["Worauf bist du heute stolz?", "Wofür bist du heute dankbar?", "Was hat dir heute Freude bereitet?", "Was war heute eine kleine Herausforderung?", "Wem konntest du heute helfen?", "Was hast du heute Neues gelernt?", "Beschreibe einen schönen Moment von heute."];
+                const today = new Date();
+                const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+                setJournalPrompt(journalPrompts[dayOfYear % journalPrompts.length]);
+
+                const todayKey = new Date().toISOString().split('T')[0];
+                const savedJournal = getLocalStorage('journal', {})[todayKey];
+                if (savedJournal) setJournalEntry(savedJournal.entry);
+
+            }, []);
+
+            useEffect(() => {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                setLocalStorage('theme', theme);
+            }, [theme]);
+
+            useEffect(() => {
+                setLocalStorage('favorites', favorites);
+            }, [favorites]);
+            
+            useEffect(() => {
+                setLocalStorage('journal', journalHistory);
+            }, [journalHistory]);
+
+            useEffect(() => {
+                setLocalStorage('moods', moods);
+                renderMoodChart();
+            }, [moods, theme]);
+            
+            useEffect(() => {
+                const allGoals = getLocalStorage('goals', {});
+                const todayKey = new Date().toISOString().split('T')[0];
+                allGoals[todayKey] = goals;
+                setLocalStorage('goals', allGoals);
+            }, [goals]);
+
+
+            // Functions
+            const handleLogin = (name) => {
+                setUserName(name);
+                setLocalStorage('userName', name);
+            };
+            
+            const handleLogout = () => {
+                setUserName(null);
+                localStorage.removeItem('userName');
+            };
+
+            const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+
+            const generateAiQuote = async (isRandom = false) => {
+                setIsQuoteLoading(true);
+                let prompt;
+                if (isRandom) {
+                    const randomConcepts = ["die Stille nach dem Regen", "das Echo eines Lächelns", "die Farbe der Dankbarkeit", "das Gewicht einer Erinnerung", "der Mut des ersten Schrittes", "die Wärme eines geteilten Gedankens", "das Flüstern der Zeit", "die Landkarte einer Narbe"];
+                    const randomTopic = randomConcepts[Math.floor(Math.random() * randomConcepts.length)];
+                    prompt = `Du bist ein weiser Philosoph. Schreibe einen einzigen, kurzen, originellen und poetischen Satz über das Konzept "${randomTopic}". Zitiere keine bekannten Personen oder Sprichwörter. Dein Satz sollte zum Nachdenken anregen. Gib nur den Satz selbst zurück, ohne Anführungszeichen.`;
+                } else {
+                    if (!quoteTopic.trim()) {
+                        alert('Bitte gib ein Thema für dein Zitat ein.');
+                        setIsQuoteLoading(false);
+                        return;
+                    }
+                    prompt = `Erstelle ein kurzes, einzigartiges und inspirierendes Zitat auf Deutsch zum Thema: "${quoteTopic}". Das Zitat sollte positiv und ermutigend sein. Gib nur das Zitat selbst zurück, ohne Anführungszeichen.`;
+                }
+
+                try {
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = ""; 
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`API request failed: ${response.status}`);
+                    const result = await response.json();
+                    if (!result.candidates || result.candidates.length === 0) throw new Error('No content received from API.');
+
+                    const text = result.candidates[0].content.parts[0].text;
+                    setCurrentQuote({
+                        content: text.trim(),
+                        author: isRandom ? 'Inspiration des Tages' : ''
+                    });
+                } catch (error) {
+                    console.error("Error generating AI quote:", error);
+                    setCurrentQuote({ content: "Zitat konnte nicht geladen werden. Bitte versuche es später erneut.", author: "System" });
+                } finally {
+                    setIsQuoteLoading(false);
+                }
+            };
+
+            const addFavorite = () => {
+                if (!currentQuote.content || currentQuote.author === 'System') return;
+                if (!favorites.some(fav => fav.content === currentQuote.content)) {
+                    setFavorites([...favorites, currentQuote]);
+                    alert('Zitat zu Favoriten hinzugefügt!');
+                } else {
+                    alert('Dieses Zitat ist bereits in deinen Favoriten.');
+                }
+            };
+            
+            const removeFavorite = (index) => {
+                setFavorites(favorites.filter((_, i) => i !== index));
+            };
+
+            const saveJournalEntry = () => {
+                if (!journalEntry.trim()) {
+                    alert('Bitte schreibe zuerst etwas.');
+                    return;
+                }
+                const todayKey = new Date().toISOString().split('T')[0];
+                setJournalHistory({
+                    ...journalHistory,
+                    [todayKey]: { prompt: journalPrompt, entry: journalEntry.trim() }
+                });
+                alert('Eintrag gespeichert!');
+            };
+
+            const saveMood = (moodValue) => {
+                const todayKey = new Date().toISOString().split('T')[0];
+                setMoods({ ...moods, [todayKey]: parseInt(moodValue) });
+                setMoodConfirmation('Stimmung für heute gespeichert!');
+                setTimeout(() => setMoodConfirmation(''), 2000);
+            };
+
+            const renderMoodChart = () => {
+                if (!moodChartRef.current) return;
+                const chartData = { labels: [], data: [] };
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    const key = d.toISOString().split('T')[0];
+                    chartData.labels.push(d.toLocaleDateString('de-DE', { weekday: 'short' }));
+                    chartData.data.push(moods[key] || 0);
+                }
+                
+                const isDark = theme === 'dark';
+                const tickColor = isDark ? 'rgba(229, 231, 235, 0.7)' : 'rgba(75, 85, 99, 0.7)';
+                const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
+                if (chartInstanceRef.current) {
+                    chartInstanceRef.current.destroy();
+                }
+
+                const ctx = moodChartRef.current.getContext('2d');
+                chartInstanceRef.current = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: 'Stimmung', data: chartData.data,
+                            backgroundColor: chartData.data.map(v => `rgba(16, 185, 129, ${0.2 + v * 0.2})`),
+                            borderColor: 'rgba(16, 185, 129, 1)', borderWidth: 1, borderRadius: 4,
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 4, ticks: { stepSize: 1, color: tickColor, callback: (v) => [' ', '😔', '😐', '🙂', '😃'][v] || '' }, grid: { color: gridColor } },
+                            x: { ticks: { color: tickColor }, grid: { display: false } }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            };
+
+            const toggleBreathing = () => {
+                if (isBreathing) {
+                    breathingTimeouts.current.forEach(clearTimeout);
+                    breathingTimeouts.current = [];
+                    setBreathingText('Start');
+                    if(breathingCircleRef.current) breathingCircleRef.current.style.transform = 'scale(1)';
+                    setIsBreathing(false);
+                } else {
+                    setIsBreathing(true);
+                    breatheCycle();
+                }
+            };
+
+            const breatheCycle = () => {
+                setBreathingText('Einatmen');
+                if(breathingCircleRef.current) breathingCircleRef.current.style.transform = 'scale(1.5)';
+
+                const t1 = setTimeout(() => {
+                    setBreathingText('Halten');
+                    const t2 = setTimeout(() => {
+                        setBreathingText('Ausatmen');
+                        if(breathingCircleRef.current) breathingCircleRef.current.style.transform = 'scale(1)';
+                        const t3 = setTimeout(breatheCycle, 4000);
+                        breathingTimeouts.current.push(t3);
+                    }, 4000);
+                    breathingTimeouts.current.push(t2);
+                }, 4000);
+                breathingTimeouts.current.push(t1);
+            };
+            
+            useEffect(() => {
+                return () => breathingTimeouts.current.forEach(clearTimeout);
+            }, []);
+
+            const addGoal = () => {
+                if (!goalInput.trim()) return;
+                setGoals([...goals, { text: goalInput.trim(), completed: false }]);
+                setGoalInput('');
+            };
+
+            const toggleGoal = (index) => {
+                const newGoals = [...goals];
+                newGoals[index].completed = !newGoals[index].completed;
+                setGoals(newGoals);
+            };
+            
+            const deleteGoal = (index) => {
+                setGoals(goals.filter((_, i) => i !== index));
+            };
+            
+            const clearCompletedGoals = () => {
+                setGoals(goals.filter(goal => !goal.completed));
+            };
+
+            if (!userName) {
+                return <LoginOverlay onLogin={handleLogin} />;
+            }
+            
+            const tabs = [
+                { id: 'zitate', label: 'Zitate' },
+                { id: 'tagebuch', label: 'Tagebuch' },
+                { id: 'stimmung', label: 'Stimmung' },
+                { id: 'atmung', label: 'Atmung' },
+                { id: 'ziele', label: 'Ziele' },
+            ];
+
+            return (
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-stone-800 dark:text-stone-200">
+                    <header className="text-center mb-8 relative">
+                        <h1 className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">Hallo, {userName}!</h1>
+                        <p className="text-stone-600 dark:text-stone-400 mt-2">Dein täglicher Begleiter für mehr Wohlbefinden.</p>
+                        <div className="absolute top-0 right-0 flex items-center gap-2">
+                            <button onClick={toggleTheme} className="p-2 rounded-full text-stone-500 dark:text-yellow-300 hover:bg-stone-200 dark:hover:bg-gray-700">
+                                {theme === 'light' ? <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg> : <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05A1 1 0 003.636 6.464l.707.707a1 1 0 001.414-1.414l-.707-.707zM3 11a1 1 0 100-2H2a1 1 0 100 2h1zM6.464 16.364l.707-.707a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414z"></path></svg>}
+                            </button>
+                            <button onClick={handleLogout} className="p-2 rounded-full text-stone-500 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-gray-700">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                            </button>
+                        </div>
+                    </header>
+                    <nav className="mb-8 border-b border-stone-200 dark:border-gray-700">
+                        <ul className="flex flex-wrap -mb-px justify-center text-sm font-medium text-center">
+                            {tabs.map(tab => (
+                                <li key={tab.id} className="mr-2">
+                                    <button onClick={() => setActiveTab(tab.id)} className={`inline-block p-4 border-b-2 rounded-t-lg ${activeTab === tab.id ? 'border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400 font-semibold' : 'border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300'}`}>
+                                        {tab.label}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                    <main>
+                        {activeTab === 'zitate' && (
+                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700 text-center">
+                                <h2 className="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400">Personalisiertes Zitat</h2>
+                                <p className="text-stone-600 dark:text-stone-400 mb-4">Wozu brauchst du heute Inspiration?</p>
+                                <div className="flex flex-col sm:flex-row gap-2 mb-4">
+                                    <input type="text" value={quoteTopic} onChange={(e) => setQuoteTopic(e.target.value)} className="flex-grow p-2 border border-stone-300 bg-white dark:bg-gray-700 dark:text-stone-200 dark:border-gray-600 rounded-md" placeholder="z.B. Motivation, Geduld, Freude..."/>
+                                    <button onClick={() => generateAiQuote(false)} className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition">Zitat erstellen</button>
+                                </div>
+                                <div className="min-h-[12rem] flex flex-col justify-center items-center mb-4 p-4 bg-stone-50 dark:bg-gray-900/50 rounded-lg">
+                                    {isQuoteLoading ? <div className="spinner"></div> : (
+                                        <>
+                                            <p className="text-xl italic text-stone-700 dark:text-stone-300">"{currentQuote.content}"</p>
+                                            {currentQuote.author && <p className="text-right text-md text-stone-500 dark:text-stone-400 mt-4 w-full">- {currentQuote.author}</p>}
+                                        </>
+                                    )}
+                                </div>
+                                <div className="flex flex-wrap justify-center items-center gap-4 border-t border-stone-200 dark:border-gray-700 pt-4">
+                                    <button onClick={() => generateAiQuote(true)} className="bg-stone-200 text-stone-700 px-4 py-2 rounded-lg hover:bg-stone-300 dark:bg-gray-700 dark:text-stone-300 dark:hover:bg-gray-600 transition">Zufälliges Zitat</button>
+                                    <button onClick={addFavorite} className="bg-stone-200 text-stone-700 px-4 py-2 rounded-lg hover:bg-stone-300 dark:bg-gray-700 dark:text-stone-300 dark:hover:bg-gray-600 transition">Favorit ★</button>
+                                    <button onClick={() => setShowFavorites(true)} className="bg-stone-200 text-stone-700 px-4 py-2 rounded-lg hover:bg-stone-300 dark:bg-gray-700 dark:text-stone-300 dark:hover:bg-gray-600 transition">Favoriten anzeigen</button>
+                                </div>
+                            </div>
+                        )}
+                        {activeTab === 'tagebuch' && (
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
+                                <h2 className="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">{journalPrompt}</h2>
+                                <textarea value={journalEntry} onChange={(e) => setJournalEntry(e.target.value)} rows="6" className="w-full p-3 border border-stone-300 bg-white dark:bg-gray-700 dark:text-stone-200 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-emerald-400 focus:outline-none" placeholder="Schreibe hier deine Gedanken..."></textarea>
+                                <button onClick={saveJournalEntry} className="w-full mt-4 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition">Eintrag für heute speichern</button>
+                                <div className="mt-6">
+                                    <h3 className="text-xl font-bold mb-2 text-center">Vergangene Einträge</h3>
+                                    <div className="space-y-4 max-h-96 overflow-y-auto p-2 bg-stone-50 dark:bg-gray-800 rounded-lg">
+                                        {Object.keys(journalHistory).length === 0 ? <p className="text-stone-500 dark:text-stone-400 text-center">Keine Einträge gefunden.</p> :
+                                            Object.keys(journalHistory).sort().reverse().map(key => (
+                                                <div key={key} className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-stone-200 dark:border-gray-600">
+                                                    <p className="font-semibold text-stone-600 dark:text-stone-300">{new Date(key).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })}: {journalHistory[key].prompt}</p>
+                                                    <p className="text-stone-800 dark:text-stone-200 whitespace-pre-wrap mt-1">{journalHistory[key].entry}</p>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {activeTab === 'stimmung' && (
+                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
+                                <h2 className="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">Wie fühlst du dich heute?</h2>
+                                <div className="flex justify-center space-x-2 sm:space-x-4 text-3xl sm:text-4xl mb-6">
+                                   {[4, 3, 2, 1].map(mood => (
+                                       <button key={mood} onClick={() => saveMood(mood)} className="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-gray-700 transition transform hover:scale-110">
+                                           {['', '😔', '😐', '🙂', '😃'][mood]}
+                                       </button>
+                                   ))}
+                                </div>
+                                <p className="text-center text-emerald-600 dark:text-emerald-400 h-6">{moodConfirmation}</p>
+                                <div className="mt-4">
+                                    <h3 className="text-xl font-bold mb-2 text-center">Stimmungsverlauf der letzten 7 Tage</h3>
+                                    <div className="relative w-full h-72 max-w-2xl mx-auto"><canvas ref={moodChartRef}></canvas></div>
+                                </div>
+                            </div>
+                        )}
+                        {activeTab === 'atmung' && (
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
+                                <h2 className="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">Geführte Atemübung</h2>
+                                <p className="text-stone-600 dark:text-stone-400 mb-6 text-center">Klicke auf den Kreis, um die Übung zu starten oder zu stoppen.<br/>Folge den Anweisungen, um zur Ruhe zu kommen.</p>
+                                <div className="flex flex-col items-center justify-center bg-stone-100 dark:bg-gray-900 rounded-lg p-6 h-80 border border-stone-200 dark:border-gray-700">
+                                    <div ref={breathingCircleRef} onClick={toggleBreathing} className="w-40 h-40 bg-emerald-400 dark:bg-emerald-500 rounded-full flex items-center justify-center cursor-pointer shadow-lg" style={{ transition: 'transform 4s ease-in-out' }}>
+                                        <span className="text-xl font-medium text-white text-center">{breathingText}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {activeTab === 'ziele' && (
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-stone-200 dark:border-gray-700">
+                                <h2 className="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400 text-center">Meine Ziele für heute</h2>
+                                <div className="flex gap-2 mb-4">
+                                    <input type="text" value={goalInput} onChange={(e) => setGoalInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && addGoal()} className="flex-grow p-2 border border-stone-300 bg-white dark:bg-gray-700 dark:text-stone-200 dark:border-gray-600 rounded-md" placeholder="Neues Ziel hinzufügen..."/>
+                                    <button onClick={addGoal} className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 transition">Hinzufügen</button>
+                                </div>
+                                <div className="space-y-2">
+                                    {goals.length === 0 ? <p className="text-stone-500 dark:text-stone-400 text-center">Noch keine Ziele für heute.</p> :
+                                        goals.map((goal, index) => (
+                                            <div key={index} className={`flex items-center p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-gray-700 ${goal.completed ? 'opacity-50' : ''}`}>
+                                                <input type="checkbox" checked={goal.completed} onChange={() => toggleGoal(index)} className="h-5 w-5 text-emerald-600 border-stone-300 dark:border-gray-500 rounded focus:ring-emerald-500 mr-3 bg-transparent"/>
+                                                <span className={`flex-grow text-stone-800 dark:text-stone-200 ${goal.completed ? 'line-through' : ''}`}>{goal.text}</span>
+                                                <button onClick={() => deleteGoal(index)} className="text-red-400 hover:text-red-600 font-bold text-lg px-2">&times;</button>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                                {goals.some(g => g.completed) && <button onClick={clearCompletedGoals} className="w-full mt-4 bg-stone-500 text-white px-4 py-2 rounded-lg hover:bg-stone-600 dark:bg-gray-600 dark:hover:bg-gray-500 transition">Erledigte Ziele entfernen</button>}
+                            </div>
+                        )}
+                    </main>
+
+                    {showFavorites && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-11/12 max-w-lg p-6 relative">
+                                <h2 className="text-2xl font-bold mb-4 text-emerald-700 dark:text-emerald-400">Meine Lieblingszitate</h2>
+                                <div className="space-y-4 max-h-96 overflow-y-auto">
+                                    {favorites.length === 0 ? <p className="text-stone-500 dark:text-stone-400">Noch keine Favoriten gespeichert.</p> :
+                                        favorites.map((fav, index) => (
+                                            <div key={index} className="bg-stone-100 dark:bg-gray-700 p-4 rounded-lg">
+                                                <p className="italic">"{fav.content}"</p>
+                                                {fav.author && <p className="text-right text-sm text-stone-500 dark:text-stone-400 mt-2">- {fav.author}</p>}
+                                                <button onClick={() => removeFavorite(index)} className="text-red-500 text-sm mt-2 hover:underline">Entfernen</button>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                                <button onClick={() => setShowFavorites(false)} className="absolute top-4 right-4 text-stone-500 dark:text-stone-300 hover:text-stone-800 dark:hover:text-white text-2xl">&times;</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
