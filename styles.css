@@ -1,7 +1,4 @@
 body {
-    background: linear-gradient(to right, #90CAF9, #FFFFFF), url('background.jpg');
-    background-size: cover;
-    background-position: center;
     font-family: 'Open Sans', sans-serif;
     color: #333;
     text-align: center;
