@@ -328,58 +328,31 @@
                     document.getElementById('show-favorites-btn').addEventListener('click', () => this.showFavoritesModal());
                     document.getElementById('close-favorites-modal-btn').addEventListener('click', () => this.hideFavoritesModal());
                 },
-                async generateAiQuote(isRandom = false) {
+                               async generateAiQuote(isRandom = false) {
                     const quoteDisplay = document.getElementById('quote-display');
                     quoteDisplay.innerHTML = `<div class="spinner"></div>`;
 
-                    let prompt;
-                    if (isRandom) {
-                        const randomConcepts = [
-                            "die Stille nach dem Regen", "das Echo eines Lächelns", "die Farbe der Dankbarkeit", 
-                            "das Gewicht einer Erinnerung", "der Mut des ersten Schrittes", "die Wärme eines geteilten Gedankens",
-                            "das Flüstern der Zeit", "die Landkarte einer Narbe"
-                        ];
-                        const randomTopic = randomConcepts[Math.floor(Math.random() * randomConcepts.length)];
-                        prompt = `Du bist ein weiser Philosoph. Schreibe einen einzigen, kurzen, originellen und poetischen Satz über das Konzept "${randomTopic}". Zitiere keine bekannten Personen oder Sprichwörter. Dein Satz sollte zum Nachdenken anregen. Gib nur den Satz selbst zurück, ohne Anführungszeichen.`;
-                    } else {
-                        const currentTopic = document.getElementById('quote-topic-input').value.trim();
-                        if (!currentTopic) {
-                            alert('Bitte gib ein Thema für dein Zitat ein.');
-                            quoteDisplay.innerHTML = `<p class="text-xl italic text-stone-700 dark:text-stone-300">Gib ein Thema ein oder lade ein zufälliges Zitat.</p>`;
-                            return;
-                        }
-                        prompt = `Erstelle ein kurzes, einzigartiges und inspirierendes Zitat auf Deutsch zum Thema: "${currentTopic}". Das Zitat sollte positiv und ermutigend sein. Gib nur das Zitat selbst zurück, ohne Anführungszeichen.`;
+                    const topics = isRandom
+                        ? ["die Stille nach dem Regen", "das Echo eines Lächelns", "die Farbe der Dankbarkeit", "der Mut des ersten Schrittes", "die Wärme eines geteilten Gedankens", "das Flüstern der Zeit", "die Landkarte einer Narbe"]
+                        : [document.getElementById('quote-topic-input').value.trim()];
+
+                    const topic = topics[Math.floor(Math.random() * topics.length)];
+                    if (!topic) {
+                        alert('Bitte gib ein Thema für dein Zitat ein.');
+                        quoteDisplay.innerHTML = `<p class="text-xl italic text-stone-700 dark:text-stone-300">Gib ein Thema ein oder lade ein zufälliges Zitat.</p>`;
+                        return;
                     }
 
-                    try {
-                        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-                        const payload = { contents: chatHistory };
-                        const apiKey = "";
-                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-                        
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
+                    const beginnings = ["Manchmal beginnt", "In der Tiefe von", "Zwischen den Schatten von", "Oft verbirgt sich", "Nur wer lauscht, erkennt"];
+                    const middles = [" ein leiser Funke", " der erste Gedanke", " ein stiller Mut", " das wahre Licht", " ein neues Morgenrot"];
+                    const endings = [" der Veränderung.", " voller Hoffnung.", " in deiner Seele.", " am Rand der Wirklichkeit.", " auf dem Weg zum Glück."];
 
-                        if (!response.ok) throw new Error(`API request failed: ${response.status}`);
-                        
-                        const result = await response.json();
-                        if (!result.candidates || result.candidates.length === 0) throw new Error('No content received from API.');
+                    const quote = `${beginnings[Math.floor(Math.random() * beginnings.length)]} ${topic}${middles[Math.floor(Math.random() * middles.length)]}${endings[Math.floor(Math.random() * endings.length)]}`;
 
-                        const text = result.candidates[0].content.parts[0].text;
-                        
-                        if (isRandom) {
-                            this.displayQuote({ content: text.trim(), author: 'Inspiration des Tages' });
-                        } else {
-                            this.displayQuote({ content: text.trim(), author: '' });
-                        }
-
-                    } catch (error) {
-                        console.error("Error generating AI quote:", error);
-                        this.showFallbackQuote();
-                    }
+                    this.displayQuote({
+                        content: quote,
+                        author: 'Deine kreative KI'
+                    });
                 },
                 showFallbackQuote() {
                     const quote = this.fallbackQuotes[Math.floor(Math.random() * this.fallbackQuotes.length)];
